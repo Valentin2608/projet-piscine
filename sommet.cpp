@@ -97,20 +97,5 @@ std::unordered_set<std::string> Sommet::rechercherCC()
     return file;
 }
 
-int Sommet::PairOuImpair() const
-{
-    int nb,i;
-
-    while(nb<m_voisins.size())
-    {
-        nb++;
-    }
-    if(nb%2==0)
-        i=0;
-    else
-        i=1;
-
-    return i;
-}
 
 

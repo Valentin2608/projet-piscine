@@ -24,8 +24,6 @@ class Sommet
         ///renvoie la liste des ids des sommets de la composante
         std::unordered_set<std::string> rechercherCC();
 
-        int PairOuImpair() const;
-
 
     protected:
 

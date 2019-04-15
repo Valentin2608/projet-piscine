@@ -2,9 +2,10 @@
 #include <iostream>
 #include "graphe.h"
 
+/// SAUVEGARDE EXTRAITE DU CODE DU TP2
 graphe::graphe(std::string nomFichier, std::string nomFichier2)
 {
-        /// OUVERTURE DU SECOND FICHIER
+        /// OUVERTURE DU FICHIER PONDERATION
     std::ifstream pfs{nomFichier2};
     if (!pfs)
         throw std::runtime_error( "Impossible d'ouvrir en lecture " + nomFichier2 );
@@ -79,6 +80,8 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
             throw std::runtime_error("Probleme lecture arete sommet 2");
         //ajouter chaque extrémité à la liste des voisins de l'autre (graphe non orienté)
         (m_aretes.find(id2))->second->AjouterSommets(id_s1,id_s2);
+        (m_sommets.find(id_s1))->second->ajouterVoisin((m_sommets.find(id_s2))->second);
+        (m_sommets.find(id_s2))->second->ajouterVoisin((m_sommets.find(id_s1))->second);
 
     }
 
@@ -102,6 +105,8 @@ void graphe::afficher() const
     }
 }
 
+
+/// A enlever si on a plus besoin à la fin
 void graphe::parcoursBFS(std::string id) const
 {
     Sommet* s0=(m_sommets.find(id))->second;
@@ -179,34 +184,6 @@ int graphe::rechercher_afficherToutesCC() const
 
     return i;
 }
-
-int graphe::isEulerien() const
-{
-    int s=0,nbSoImpairs=0,eul=0,nbSoPairs=0;
-    for(auto a:m_sommets)
-    {
-    Sommet* s0=a.second;
-    s=s0->PairOuImpair();
-       if(s==1)
-       {
-           nbSoImpairs++;
-       }
-       if(s==0)
-       {
-           nbSoPairs++;
-       }
-    }
-    if(nbSoImpairs==2)
-    {
-        eul=1;
-    }
-    if(nbSoPairs==m_sommets.size())
-    {
-        eul=2;
-    }
-    return eul;
-}
-
 graphe::~graphe()
 {
     //dtor
