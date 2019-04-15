@@ -4,6 +4,37 @@
 
 graphe::graphe(std::string nomFichier, std::string nomFichier2)
 {
+        /// OUVERTURE DU SECOND FICHIER
+    std::ifstream pfs{nomFichier2};
+    if (!pfs)
+        throw std::runtime_error( "Impossible d'ouvrir en lecture " + nomFichier2 );
+    int taille2;
+    int ponderation;
+    pfs >>  taille2;
+    if ( pfs.fail() )
+        throw std::runtime_error("Probleme lecture ordre du graphe");
+    std::string idd;
+    float c1,c2;
+    pfs>> ponderation;
+    ///lecture des arrete
+    for (int i=0; i< taille2; ++i)
+    {
+
+        if(pfs.fail())
+            throw std::runtime_error("Probleme lecture données arete");
+        pfs>> idd;
+        if(pfs.fail())
+            throw std::runtime_error("Probleme lecture données arete");
+        pfs >> c1;
+        if(pfs.fail())
+            throw std::runtime_error("Probleme lecture données arete");
+        pfs >> c2;
+        if(pfs.fail())
+            throw std::runtime_error("Probleme lecture données arete1");
+        m_aretes.insert({idd,new Arete{idd,c1,c2}});
+    }
+
+    /// OUVERTURE FICHIER
     std::ifstream ifs{nomFichier};
     if (!ifs)
         throw std::runtime_error( "Impossible d'ouvrir en lecture " + nomFichier );
@@ -31,12 +62,13 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
     ifs >> taille;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture taille du graphe");
-    std::string id_s1,id_s2;
+    std::string id2,id_s1,id_s2;
     //lecture des aretes
     for (int i=0; i<taille; ++i)
     {
         ///lecture des ids des deux extrémités
-        ifs>>id;
+
+        ifs>>id2;
         if(ifs.fail())
             throw std::runtime_error("Probleme lecture arete sommet id");
         ifs>>id_s1;
@@ -46,37 +78,8 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
         if(ifs.fail())
             throw std::runtime_error("Probleme lecture arete sommet 2");
         //ajouter chaque extrémité à la liste des voisins de l'autre (graphe non orienté)
-        (m_aretes.find(id))->second->AjouterSommets(id_s1,id_s2);
-    }
+        (m_aretes.find(id2))->second->AjouterSommets(id_s1,id_s2);
 
-    /// OUVERTURE DU SECOND FICHIER
-    std::ifstream pfs{nomFichier2};
-    if (!pfs)
-        throw std::runtime_error( "Impossible d'ouvrir en lecture " + nomFichier2 );
-    int taille2;
-    int ponderation;
-    pfs >>  taille2;
-    if ( pfs.fail() )
-        throw std::runtime_error("Probleme lecture ordre du graphe");
-    std::string idd;
-    float c1,c2;
-    pfs>> ponderation;
-    ///lecture des arrete
-    for (int i=0; i< taille2; ++i)
-    {
-
-        if(pfs.fail())
-            throw std::runtime_error("Probleme lecture données arete");
-        pfs>> idd;
-        if(pfs.fail())
-            throw std::runtime_error("Probleme lecture données arete");
-        pfs >> c1;
-        if(pfs.fail())
-            throw std::runtime_error("Probleme lecture données arete");
-        pfs >> c2;
-        if(pfs.fail())
-            throw std::runtime_error("Probleme lecture données arete1");
-        m_aretes.insert({id,new Arete{idd,c1,c2}});
     }
 
 }
