@@ -43,8 +43,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
         if(ifs.fail())
             throw std::runtime_error("Probleme lecture arete sommet 2");
         //ajouter chaque extrémité à la liste des voisins de l'autre (graphe non orienté)
-        (m_sommets.find(id))->second->ajouterVoisin((m_sommets.find(id_voisin))->second);
-        (m_sommets.find(id_voisin))->second->ajouterVoisin((m_sommets.find(id))->second);//remove si graphe orienté
+        (m_aretes.find(i))->second->AjouterSommets(id,id_voisin);
     }
 }
 void graphe::afficher() const

@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include "sommet.h"
+#include "arete.h"
 
 class graphe
 {
@@ -30,8 +31,8 @@ class graphe
 
     private:
         /// Le réseau est constitué d'une collection de sommets
-        std::unordered_map<std::string,Sommet*> m_sommets;//stockée dans une map (clé=id du sommet, valeur= pointeur sur le sommet)
-
+        std::unordered_map<std::string,Sommet*> m_sommets;///stockée dans une map (clé=id du sommet, valeur= pointeur sur le sommet)
+        std::unordered_map<int,Arete*> m_aretes; /// clé= id de l'arete, valeur = pointeur sur arete
 };
 
 #endif // GRAPHE_H
