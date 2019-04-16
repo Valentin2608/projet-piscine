@@ -2,6 +2,7 @@
 #define GRAPHE_H
 #include <string>
 #include <unordered_map>
+#include <algorithm>
 #include "sommet.h"
 #include "arete.h"
 
@@ -11,6 +12,7 @@ class graphe
         ///constructeur qui charge le graphe en mémoire
         //format du fichier ordre/liste des sommets/taille/liste des arêtes
         graphe(std::string,std::string);
+        graphe();
         ~graphe();
         void afficher() const;
         ///lance un parcours en largeur à partir du sommet d'identifiant id
@@ -24,6 +26,8 @@ class graphe
         ///recherche et affiche les composantes connexes
         ///retourne le nombre de composantes connexes
         int rechercher_afficherToutesCC() const;
+        graphe prim();
+        void ajouterSommet(Sommet* s);
 
     protected:
 

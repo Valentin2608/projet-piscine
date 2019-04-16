@@ -3,6 +3,11 @@
 #include "graphe.h"
 
 /// SAUVEGARDE EXTRAITE DU CODE DU TP2
+graphe::graphe()
+{
+
+}
+
 graphe::graphe(std::string nomFichier, std::string nomFichier2)
 {
         /// OUVERTURE DU FICHIER PONDERATION
@@ -34,7 +39,6 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
             throw std::runtime_error("Probleme lecture données arete1");
         m_aretes.insert({idd,new Arete{idd,c1,c2}});
     }
-
     /// OUVERTURE FICHIER
     std::ifstream ifs{nomFichier};
     if (!ifs)
@@ -78,11 +82,11 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
         ifs>>id_s2;
         if(ifs.fail())
             throw std::runtime_error("Probleme lecture arete sommet 2");
+
         //ajouter chaque extrémité à la liste des voisins de l'autre (graphe non orienté)
         (m_aretes.find(id2))->second->AjouterSommets(id_s1,id_s2);
         (m_sommets.find(id_s1))->second->ajouterVoisin((m_sommets.find(id_s2))->second);
         (m_sommets.find(id_s2))->second->ajouterVoisin((m_sommets.find(id_s1))->second);
-
     }
 
 }
@@ -184,6 +188,66 @@ int graphe::rechercher_afficherToutesCC() const
 
     return i;
 }
+
+void graphe::ajouterSommet(Sommet* s)
+{
+    m_sommets.insert({s->getId(),s});
+}
+graphe graphe::prim()
+{
+    ///  Crée un graphe vide
+
+    graphe G;
+
+    std::string id="0",id_voisin;
+    std::vector<const Arete*> aretes;
+    std::vector<float> cou;
+    /// Selectionne un sommet et l'ajoute au graphe vide
+    Sommet* s=(m_sommets.find(id))->second;
+    G.ajouterSommet(s);
+    /// Parcourir tous les sommets du graphes de bases
+    //for(size_t i=0; i<sizeof(m_sommets);i++)
+    //{
+        std::vector<const Sommet*> voisins=(m_sommets.find(id))->second->getVoisins();
+        /// Parmis les voisins du sommets choisi, trouver les aretes correspondantes
+        for(auto y : voisins)
+        {
+            id_voisin = y->getId(); /// prendre ID du voisin
+            /// regarder parmis toutes les aretes du graphe laquelle relis les deux sommets avec leur ID
+            for(auto a : m_aretes)
+            {
+                if(a.second->getBool() != 1)
+                {
+
+                std::vector<std::string> sommets = a.second->getSommets();
+                std::string num = (m_sommets.find(id))->second->getId(); /// Recuperer ID du sommet initiale
+
+                if(( num == sommets[0])||(num == sommets[1]))  /// Si l'id du sommet initial correspond a une arrete
+                    if((id_voisin==sommets[0])||(id_voisin==sommets[1])) /// Si l'id du sommet voisin correspond a la meme arrete
+                        {
+                            aretes.push_back(a.second);
+                            a.second->utiliser(); /// "marquer" l'arete utilisée pour par qu'on la reprenne
+                        }
+                }
+            }
+
+        }
+            /// A REVOIR 1
+
+            /// Une fois que les arrêtes relies au sommet initiale sont trouvées
+
+
+            std::sort(aretes.begin().getCout,cou.end().getCout);
+
+
+        //}
+
+
+
+    return G;
+}
+
+
 graphe::~graphe()
 {
     //dtor

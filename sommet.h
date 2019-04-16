@@ -23,7 +23,8 @@ class Sommet
         ///méthode qui recherche la composante connexe du sommet
         ///renvoie la liste des ids des sommets de la composante
         std::unordered_set<std::string> rechercherCC();
-
+        std::string getId() const;
+        std::vector<const Sommet*> getVoisins() const;
 
     protected:
 

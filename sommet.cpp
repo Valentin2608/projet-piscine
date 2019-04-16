@@ -25,6 +25,16 @@ void Sommet::afficherVoisins() const
     }
 }
 
+std::string Sommet::getId() const
+{
+    return m_id;
+}
+
+std::vector<const Sommet*> Sommet::getVoisins() const
+{
+    return m_voisins;
+}
+
 Sommet::~Sommet()
 {
     //dtor
