@@ -20,10 +20,25 @@ bool Arete::getBool()
     return m_utiliser;
 }
 
+bool Arete::getSelection()
+{
+    return m_selectionner;
+}
+
 void Arete::utiliser()
 {
     m_utiliser=1;
 }
+
+std::string Arete::getId_sommet2()
+{
+    return m_id_sommet[1];
+}
+void Arete::selectionner()
+{
+    m_selectionner=1;
+}
+
 
 float Arete::getCout1() const
 {

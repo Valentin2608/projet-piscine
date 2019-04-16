@@ -193,6 +193,17 @@ void graphe::ajouterSommet(Sommet* s)
 {
     m_sommets.insert({s->getId(),s});
 }
+
+void graphe::ajouterArete(Arete* s)
+{
+    m_aretes.insert({s->getId(),s});
+}
+
+std::unordered_map<std::string,Sommet*> graphe::getSommets()
+{
+    return m_sommets;
+}
+
 graphe graphe::prim()
 {
     ///  Crée un graphe vide
@@ -200,14 +211,16 @@ graphe graphe::prim()
     graphe G;
 
     std::string id="0",id_voisin;
-    std::vector<const Arete*> aretes;
+    std::vector<Arete*> aretes;
     std::vector<float> cou;
     /// Selectionne un sommet et l'ajoute au graphe vide
     Sommet* s=(m_sommets.find(id))->second;
     G.ajouterSommet(s);
     /// Parcourir tous les sommets du graphes de bases
-    //for(size_t i=0; i<sizeof(m_sommets);i++)
-    //{
+    //do{
+    for( auto m : m_sommets)
+    {
+        std::cout << id;
         std::vector<const Sommet*> voisins=(m_sommets.find(id))->second->getVoisins();
         /// Parmis les voisins du sommets choisi, trouver les aretes correspondantes
         for(auto y : voisins)
@@ -226,23 +239,40 @@ graphe graphe::prim()
                     if((id_voisin==sommets[0])||(id_voisin==sommets[1])) /// Si l'id du sommet voisin correspond a la meme arrete
                         {
                             aretes.push_back(a.second);
-                            a.second->utiliser(); /// "marquer" l'arete utilisée pour par qu'on la reprenne
+                            a.second->utiliser(); /// "marquer" l'arete utilisée pour pas qu'on la reprenne
                         }
                 }
             }
 
         }
-            /// A REVOIR 1
 
+            /// A REVOIR
             /// Une fois que les arrêtes relies au sommet initiale sont trouvées
+            for(auto tri : aretes)
+            {
+                cou.push_back(tri->getCout1());
+            }
+            std::sort(cou.begin(), cou.end());
+            for(auto tri : aretes)
+            {
+                if(tri->getSelection()!=1)
+                {
+                if((cou[0])==(tri->getCout1()))
+                    {
+                        G.ajouterArete(tri);
+                        tri->selectionner();
+                        std::string idd = tri->getId_sommet2(); /// faire en sorte de prendre aussi le 1er pcq là on prend en compte que le deuxieme sommet de l'arrete
+                        Sommet* so=(m_sommets.find(idd))->second;
+                        G.ajouterSommet(so);
+                        id=idd;
+                    }
 
+                }
+            }
+    }
+   // }while(m_sommets.size()!=(G.getSommets()).size());
 
-            std::sort(aretes.begin().getCout,cou.end().getCout);
-
-
-        //}
-
-
+        G.afficher();
 
     return G;
 }

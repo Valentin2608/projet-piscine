@@ -27,7 +27,9 @@ class graphe
         ///retourne le nombre de composantes connexes
         int rechercher_afficherToutesCC() const;
         graphe prim();
-        void ajouterSommet(Sommet* s);
+        void ajouterSommet(Sommet *s);
+        void ajouterArete(Arete *s);
+        std::unordered_map<std::string,Sommet*> getSommets();
 
     protected:
 
