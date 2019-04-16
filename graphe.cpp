@@ -213,18 +213,18 @@ graphe graphe::prim()
     std::string id="0",id_voisin;
     std::vector<Arete*> aretes;
     std::vector<float> cou;
+    std::string idd;
     /// Selectionne un sommet et l'ajoute au graphe vide
     Sommet* s=(m_sommets.find(id))->second;
     G.ajouterSommet(s);
     /// Parcourir tous les sommets du graphes de bases
-    //do{
-    for( auto m : m_sommets)
-    {
+    do{
         std::cout << id;
         std::vector<const Sommet*> voisins=(m_sommets.find(id))->second->getVoisins();
         /// Parmis les voisins du sommets choisi, trouver les aretes correspondantes
         for(auto y : voisins)
         {
+            std::cout << id;
             id_voisin = y->getId(); /// prendre ID du voisin
             /// regarder parmis toutes les aretes du graphe laquelle relis les deux sommets avec leur ID
             for(auto a : m_aretes)
@@ -260,8 +260,10 @@ graphe graphe::prim()
                 if((cou[0])==(tri->getCout1()))
                     {
                         G.ajouterArete(tri);
-                        tri->selectionner();
-                        std::string idd = tri->getId_sommet2(); /// faire en sorte de prendre aussi le 1er pcq là on prend en compte que le deuxieme sommet de l'arrete
+                        tri->selectionner(); ///  Bool 0 -> 1
+                        idd = tri->getId_sommet2();
+                        if(idd==id)
+                            idd = tri->getId_sommet1(); /// CA MARCHE PAS CA RESTE A 2
                         Sommet* so=(m_sommets.find(idd))->second;
                         G.ajouterSommet(so);
                         id=idd;
@@ -269,8 +271,8 @@ graphe graphe::prim()
 
                 }
             }
-    }
-   // }while(m_sommets.size()!=(G.getSommets()).size());
+
+    }while(m_sommets.size()!=(G.getSommets()).size());
 
         G.afficher();
 

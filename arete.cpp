@@ -34,6 +34,12 @@ std::string Arete::getId_sommet2()
 {
     return m_id_sommet[1];
 }
+
+std::string Arete::getId_sommet1()
+{
+    return m_id_sommet[0];
+}
+
 void Arete::selectionner()
 {
     m_selectionner=1;

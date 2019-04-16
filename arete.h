@@ -22,6 +22,7 @@ class Arete
         void selectionner();
        std::string getId() const;
        std::string getId_sommet2();
+       std::string getId_sommet1();
 
 
 
