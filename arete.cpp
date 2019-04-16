@@ -24,6 +24,24 @@ void Arete::AfficherArete() const
     << "l'arete depend des sommets numero " << m_id_sommet1 << " et " << m_id_sommet2 << std::endl;
 }
 
+std::string Arete::getId_sommet1() const
+{
+    return m_id_sommet1;
+}
+std::string Arete::getId_sommet2() const
+{
+    return m_id_sommet2;
+}
+float Arete::getC1()const
+{
+    return m_c1;
+
+}
+float Arete::getC2()const
+{
+    return m_c2;
+
+}
 Arete::~Arete()
 {
     //dtor

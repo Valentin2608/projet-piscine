@@ -12,6 +12,10 @@ class Arete
         Arete(std::string id,float cout1,float cout2);
         void AjouterSommets(std::string s1,std::string s2);
         void AfficherArete() const;
+        std::string getId_sommet1()const;
+        std::string getId_sommet2()const;
+        float getC1()const;
+        float getC2()const;
         virtual ~Arete();
 
 

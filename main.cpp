@@ -4,8 +4,10 @@
 int main()
 {
     std::string id;
-    graphe g{"files/broadway.txt", "files/broadway_weights_0.txt"};
+    graphe g{"files/triville.txt", "files/triville_weights_0.txt"};
     g.afficher();
+    g.dessinerGraphe();
+
 
 
     return 0;

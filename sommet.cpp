@@ -24,6 +24,20 @@ void Sommet::afficherVoisins() const
         v->afficherData();
     }
 }
+double Sommet::getX() const
+{
+    return m_x;
+}
+
+double Sommet::getY() const
+{
+    return m_y;
+}
+
+std::string Sommet::getId() const
+{
+    return m_id;
+}
 
 Sommet::~Sommet()
 {

@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include "graphe.h"
+#include <allegro.h>
 
 graphe::graphe(std::string nomFichier, std::string nomFichier2)
 {
@@ -149,6 +150,49 @@ void graphe::afficherDFS(std::string id) const
         }
         std::cout<<id<<std::endl;
     }
+}
+void graphe::dessinerGraphe()
+{
+    //initialisation allegro
+    allegro_init();
+    install_keyboard();
+    set_color_depth(desktop_color_depth());
+    set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0);
+     if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0)!=0)
+    {
+        allegro_message("probleme mode graphique");
+        allegro_exit();
+        exit(EXIT_FAILURE);
+    }
+     while (!key[KEY_ESC])//ne pas sortir de la boucle
+    {
+
+
+
+    // dessin arêtes
+     for (auto a:m_aretes)
+     {
+         std::string idd1=a.second->getId_sommet1();// on prend le numero des sommets de l'arête
+         std::string idd2=a.second->getId_sommet2();
+         Sommet*s=(m_sommets.find(idd1))->second;
+         Sommet*p= (m_sommets.find(idd2))->second;
+         line(screen,s->getX()*1.5,s->getY()*1.5,p->getX()*1.5,p->getY()*1.5,makecol(0,0,255));//affichage arête
+       //  textprintf_ex(screen,font,((s->getX()+p->getX)/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC1().c_str());//affichage numéro arête
+        //textprintf_ex(screen,font,((s->getX()+p->getX)/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC2().c_str());//affichage numéro arête
+     }
+     //dessin des sommets
+    for(auto a:m_sommets)
+    {
+        circlefill(screen,(a.second->getX())*1.5,(a.second->getY())*1.5,15,makecol(0,0,255));//affichage sommet
+        textprintf_ex(screen,font,(a.second->getX()-2)*1.5,(a.second->getY()-2)*1.5,makecol(255,255,255),-1,a.second->getId().c_str());//affichage numero du sommet
+    }
+    }
+
+
+
+
+
+
 }
 int graphe::rechercher_afficherToutesCC() const
 {

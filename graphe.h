@@ -21,6 +21,9 @@ class graphe
         void parcoursDFS(std::string) const;
         ///lance et affiche le parcours en profondeur à partir du sommet d'identifiant id
         void afficherDFS(std::string) const;
+
+        void dessinerGraphe();
+
         ///recherche et affiche les composantes connexes
         ///retourne le nombre de composantes connexes
         int rechercher_afficherToutesCC() const;
