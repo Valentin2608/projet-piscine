@@ -10,7 +10,7 @@ class Sommet
 {
     public:
         ///constructeur qui reçoit en params les données du sommet
-        Sommet(std::string,double,double);
+        Sommet(int,double,double);
         ~Sommet();
         void ajouterVoisin(const Sommet*);
         void afficherData() const;
@@ -23,7 +23,7 @@ class Sommet
         ///méthode qui recherche la composante connexe du sommet
         ///renvoie la liste des ids des sommets de la composante
         std::unordered_set<std::string> rechercherCC();
-        std::string getId() const;
+        int getId() const;
         std::vector<const Sommet*> getVoisins() const;
         bool getSelection();
         void selectionner();
@@ -35,7 +35,7 @@ class Sommet
         std::vector<const Sommet*> m_voisins;
 
         /// Données spécifiques du sommet
-        std::string m_id; // Identifiant
+        int m_id; // Identifiant
         double m_x, m_y; // Position
         bool m_selectionner=0;
 

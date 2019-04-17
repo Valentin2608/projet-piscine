@@ -5,7 +5,7 @@
 #include<unordered_set>
 #include "sommet.h"
 
-Sommet::Sommet(std::string id,double x,double y):m_id{id},m_x{x},m_y{y}
+Sommet::Sommet(int id,double x,double y):m_id{id},m_x{x},m_y{y}
 {
 }
 void Sommet::ajouterVoisin(const Sommet* voisin)
@@ -37,7 +37,7 @@ bool Sommet::getSelection()
 }
 
 
-std::string Sommet::getId() const
+int Sommet::getId() const
 {
     return m_id;
 }
@@ -52,7 +52,7 @@ Sommet::~Sommet()
     //dtor
 }
 
-std::unordered_map<std::string,std::string> Sommet::parcoursBFS() const
+/*std::unordered_map<std::string,std::string> Sommet::parcoursBFS() const
 {
     std::unordered_map<std::string,std::string> l_pred;
     std::queue<const Sommet*> file;
@@ -119,5 +119,5 @@ std::unordered_set<std::string> Sommet::rechercherCC()
     return file;
 }
 
-
+*/
 
