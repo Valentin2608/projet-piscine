@@ -16,6 +16,7 @@ class Arete
         std::string getId_sommet2()const;
         float getC1()const;
         float getC2()const;
+        std::string getId()const;
         virtual ~Arete();
 
 

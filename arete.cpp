@@ -42,6 +42,10 @@ float Arete::getC2()const
     return m_c2;
 
 }
+std::string Arete::getId() const
+{
+    return m_id;
+}
 Arete::~Arete()
 {
     //dtor

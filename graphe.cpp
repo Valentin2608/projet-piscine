@@ -156,37 +156,62 @@ void graphe::dessinerGraphe()
     //initialisation allegro
     allegro_init();
     install_keyboard();
+    install_mouse();
     set_color_depth(desktop_color_depth());
     set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0);
+
+    BITMAP*buffer;
+    BITMAP*fond;
+    buffer=create_bitmap(800,600);
+    fond=load_bitmap("fond.bmp",NULL);
+    int boutton=0;
+    int boutton1=0;
+    int boutton2=0;
      if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0)!=0)
     {
         allegro_message("probleme mode graphique");
         allegro_exit();
         exit(EXIT_FAILURE);
     }
+    show_mouse(screen);
      while (!key[KEY_ESC])//ne pas sortir de la boucle
     {
 
 
+    draw_sprite(buffer,fond,0,0);
+    rectfill(buffer,300,300,500,400,makecol(0,0,255));
+    if (mouse_x>=300 && mouse_x<=500 && mouse_y>=300 && mouse_y<=400 && mouse_b & 1)
+    {
+        clear_to_color(buffer, makecol(255,255,255));
+        draw_sprite(buffer,fond,0,0);
 
-    // dessin arêtes
-     for (auto a:m_aretes)
+        for (auto a:m_aretes)
      {
          std::string idd1=a.second->getId_sommet1();// on prend le numero des sommets de l'arête
          std::string idd2=a.second->getId_sommet2();
          Sommet*s=(m_sommets.find(idd1))->second;
          Sommet*p= (m_sommets.find(idd2))->second;
-         line(screen,s->getX()*1.5,s->getY()*1.5,p->getX()*1.5,p->getY()*1.5,makecol(0,0,255));//affichage arête
-       //  textprintf_ex(screen,font,((s->getX()+p->getX)/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC1().c_str());//affichage numéro arête
-        //textprintf_ex(screen,font,((s->getX()+p->getX)/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC2().c_str());//affichage numéro arête
+         line(buffer,s->getX()*1.5,s->getY()*1.5,p->getX()*1.5,p->getY()*1.5,makecol(0,0,255));
+         textprintf_ex(buffer,font,(((s->getX()+p->getX())/2)-10)*1.5,(((s->getY()+p->getY())/2)-5)*1.5,makecol(0,0,255),-1,a.second->getId().c_str());//affichage arête
+       //  textprintf_ex(screen,font,((s->getX()+p->getX()/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC1().c_str());//affichage numéro arête
+        //textprintf_ex(screen,font,((s->getX()+p->getX()/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC2().c_str());//affichage numéro arête
      }
      //dessin des sommets
     for(auto a:m_sommets)
     {
-        circlefill(screen,(a.second->getX())*1.5,(a.second->getY())*1.5,15,makecol(0,0,255));//affichage sommet
-        textprintf_ex(screen,font,(a.second->getX()-2)*1.5,(a.second->getY()-2)*1.5,makecol(255,255,255),-1,a.second->getId().c_str());//affichage numero du sommet
+        circlefill(buffer,(a.second->getX())*1.5,(a.second->getY())*1.5,15,makecol(0,0,255));//affichage sommet
+        textprintf_ex(buffer,font,(a.second->getX()-2)*1.5,(a.second->getY()-2)*1.5,makecol(255,255,255),-1,a.second->getId().c_str());//affichage numero du sommet
     }
+    /*boutton1=draw_bouton(buffer,800/2-25,600/2+100,800/2-25+60,600/2+30+100,makecol(228,22,84),makecol(239,99,141),3,"QUITTER");
+    boutton=draw_bouton(buffer,800/2-25,600/2,800/2-25+60,600/2+30,makecol(36,172,217),makecol(168,222,240),3,"RESUME");
+    boutton2=draw_bouton(buffer,800/2-25,600/2+50,800/2-25+60,600/2+30+50,makecol(36,172,217),makecol(168,222,240),3,"REJOUER");*/
+
     }
+    draw_sprite(screen,buffer,0,0);
+    }
+    // dessin arêtes
+
+
 
 
 
