@@ -19,7 +19,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
     pfs >>  taille2;
     if ( pfs.fail() )
         throw std::runtime_error("Probleme lecture ordre du graphe");
-    std::string idd;
+    int idd;
     float c1,c2;
     pfs>> ponderation;
     ///lecture des arrete
@@ -37,7 +37,8 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
         pfs >> c2;
         if(pfs.fail())
             throw std::runtime_error("Probleme lecture données arete1");
-        m_aretes.insert({idd,new Arete{idd,c1,c2}});
+        float c[2]; c[0]=c1; c[1]=c2;
+        m_aretes.push_back(new Arete{idd,c});
     }
     /// OUVERTURE FICHIER
     std::ifstream ifs{nomFichier};
@@ -47,7 +48,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
     ifs >> ordre;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture ordre du graphe");
-    std::string id;
+    int id;
     double x,y;
     //lecture des sommets
     for (int i=0; i<ordre; ++i)
@@ -61,13 +62,13 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
         ifs>>y;
         if(ifs.fail())
             throw std::runtime_error("Probleme lecture données sommet");
-        m_sommets.insert({id,new Sommet{id,x,y}});
+        m_sommets.push_back(new Sommet{id,x,y});
     }
     int taille;
     ifs >> taille;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture taille du graphe");
-    std::string id2,id_s1,id_s2;
+    int id2,id_s1,id_s2;
     //lecture des aretes
     for (int i=0; i<taille; ++i)
     {
@@ -84,9 +85,9 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
             throw std::runtime_error("Probleme lecture arete sommet 2");
 
         //ajouter chaque extrémité à la liste des voisins de l'autre (graphe non orienté)
-        (m_aretes.find(id2))->second->AjouterSommets(id_s1,id_s2);
-        (m_sommets.find(id_s1))->second->ajouterVoisin((m_sommets.find(id_s2))->second);
-        (m_sommets.find(id_s2))->second->ajouterVoisin((m_sommets.find(id_s1))->second);
+        m_aretes[id2]->AjouterSommets(id_s1,id_s2);
+        m_sommets[id_s1]->ajouterVoisin(m_sommets[id_s2]);
+        m_sommets[id_s2]->ajouterVoisin(m_sommets[id_s1]);
     }
 
 }
@@ -97,21 +98,21 @@ void graphe::afficher() const
     for(auto s:m_sommets)
     {
         std::cout<<"sommet: ";
-        (s.second)->afficherData();
+        s->afficherData();
         std::cout << std::endl;
     }
 
     for(auto s:m_aretes)
     {
         std::cout<<"arrete: ";
-        (s.second)->AfficherArete();
+        s->AfficherArete();
         std::cout << std::endl;
     }
 }
 
 
 /// A enlever si on a plus besoin à la fin
-void graphe::parcoursBFS(std::string id) const
+/*void graphe::parcoursBFS(std::string id) const
 {
     Sommet* s0=(m_sommets.find(id))->second;
     std::unordered_map<std::string,std::string> l_pred;
@@ -188,21 +189,23 @@ int graphe::rechercher_afficherToutesCC() const
 
     return i;
 }
-
+*/
 void graphe::ajouterSommet(Sommet* s)
 {
-    m_sommets.insert({s->getId(),s});
+    m_sommets.push_back(s);
 }
 
 void graphe::ajouterArete(Arete* s)
 {
-    m_aretes.insert({s->getId(),s});
+    m_aretes.push_back(s);
 }
 
-std::unordered_map<std::string,Sommet*> graphe::getSommets()
+std::vector<Sommet*> graphe::getSommets()
 {
     return m_sommets;
 }
+/*
+
 
 graphe graphe::prim()
 {
@@ -215,6 +218,7 @@ graphe graphe::prim()
     std::vector<Arete*> aretes;
     std::vector<float> cou;
     std::string idd;
+    std::vector<Sommet*> sommets_decouverts;
     Sommet* so;
     (m_sommets.find(id))->second->selectionner();
     /// Selectionne un sommet et l'ajoute au graphe vide
@@ -258,7 +262,7 @@ graphe graphe::prim()
                 cou.push_back(tri->getCout1());
             }
         }
-        std::sort(cou.begin(), cou.end());
+        std::sort(cou.begin(), cou.end()); /// on range tous les coût par ordre croissant
 
         for(auto tri : aretes)
         {
@@ -304,7 +308,7 @@ graphe graphe::prim()
     return G;
 }
 
-
+*/
 graphe::~graphe()
 {
     //dtor

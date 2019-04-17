@@ -29,14 +29,14 @@ class graphe
         graphe prim();
         void ajouterSommet(Sommet *s);
         void ajouterArete(Arete *s);
-        std::unordered_map<std::string,Sommet*> getSommets();
+        std::vector<Sommet*> getSommets();
 
     protected:
 
     private:
         /// Le réseau est constitué d'une collection de sommets
-        std::unordered_map<std::string,Sommet*> m_sommets;///stockée dans une map (clé=id du sommet, valeur= pointeur sur le sommet)
-        std::unordered_map<std::string,Arete*> m_aretes; /// clé= id de l'arete, valeur = pointeur sur arete
+        std::vector<Sommet*> m_sommets;///stockée dans une map (clé=id du sommet, valeur= pointeur sur le sommet)
+        std::vector<Arete*> m_aretes; /// clé= id de l'arete, valeur = pointeur sur arete
 };
 
 #endif // GRAPHE_H
