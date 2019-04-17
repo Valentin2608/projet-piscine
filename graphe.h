@@ -5,6 +5,8 @@
 #include <algorithm>
 #include "sommet.h"
 #include "arete.h"
+#include <allegro.h>
+
 
 class graphe
 {
@@ -26,10 +28,12 @@ class graphe
         ///recherche et affiche les composantes connexes
         ///retourne le nombre de composantes connexes
         int rechercher_afficherToutesCC() const;
-        graphe prim();
+        graphe prim(int num);
         void ajouterSommet(Sommet *s);
         void ajouterArete(Arete *s);
         std::vector<Sommet*> getSommets();
+        void dessinerGraphe();
+
 
     protected:
 

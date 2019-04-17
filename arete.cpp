@@ -1,11 +1,11 @@
 #include "arete.h"
 
-Arete::Arete(int id,float cout1[2],std::vector<int> id_s):m_id{id},m_c{cout1[2]},m_id_sommet{id_s}
+Arete::Arete(int id,float cout1,float cout2,std::vector<int> id_s):m_id{id},m_c1{cout1},m_c2{cout2},m_id_sommet{id_s}
 {
     //ctor
 }
 
-Arete::Arete(int  id,float cout1[2]):m_id{id},m_c{cout1[2]}
+Arete::Arete(int  id,float cout1,float cout2):m_id{id},m_c1{cout1},m_c2{cout2}
 {
 
 }
@@ -46,10 +46,16 @@ void Arete::selectionner()
 }
 
 
-float* Arete::getCout()
+float Arete::getCout1()
 {
-    return m_c;
+    return m_c1;
 }
+
+float Arete::getCout2()
+{
+    return m_c2;
+}
+
 
 void Arete::AjouterSommets(int  s1,int s2)
 {
@@ -60,7 +66,7 @@ void Arete::AjouterSommets(int  s1,int s2)
 void Arete::AfficherArete() const
 {
     std::cout << "numero :" << m_id << std::endl
-    << "Cout 1 : " << m_c[0] << "  Cout 2 : " << m_c[1] << std::endl
+    << "Cout 1 : " << m_c1 << "  Cout 2 : " << m_c2 << std::endl
     << "l'arete depend des sommets numero " << m_id_sommet[0] << " et " << m_id_sommet[1] << std::endl
     << " selectionner " << m_selectionner << std::endl;
 }

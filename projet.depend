@@ -38,38 +38,39 @@
 	<string>
 	<vector>
 
-1555496845 source:c:\users\asus\projet-piscine\arete.cpp
+1555500225 source:c:\users\asus\projet-piscine\arete.cpp
 	"arete.h"
 
-1555496845 c:\users\asus\projet-piscine\arete.h
+1555500225 c:\users\asus\projet-piscine\arete.h
 	<iostream>
 	<string>
 	<vector>
 
-1555497804 source:c:\users\asus\projet-piscine\graphe.cpp
+1555516207 source:c:\users\asus\projet-piscine\graphe.cpp
 	<fstream>
 	<iostream>
 	"graphe.h"
 
-1555497804 c:\users\asus\projet-piscine\graphe.h
+1555515461 c:\users\asus\projet-piscine\graphe.h
 	<string>
 	<unordered_map>
 	<algorithm>
 	"sommet.h"
 	"arete.h"
+	<allegro.h>
 
-1555496643 c:\users\asus\projet-piscine\sommet.h
+1555515608 c:\users\asus\projet-piscine\sommet.h
 	<string>
 	<vector>
 	<queue>
 	<unordered_map>
 	<unordered_set>
 
-1555495336 source:c:\users\asus\projet-piscine\main.cpp
+1555515276 source:c:\users\asus\projet-piscine\main.cpp
 	<iostream>
 	"graphe.h"
 
-1555496643 source:c:\users\asus\projet-piscine\sommet.cpp
+1555515608 source:c:\users\asus\projet-piscine\sommet.cpp
 	<iostream>
 	<queue>
 	<stack>

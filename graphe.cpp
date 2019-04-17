@@ -37,8 +37,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
         pfs >> c2;
         if(pfs.fail())
             throw std::runtime_error("Probleme lecture données arete1");
-        float c[2]; c[0]=c1; c[1]=c2;
-        m_aretes.push_back(new Arete{idd,c});
+        m_aretes.push_back(new Arete{idd,c1,c2});
     }
     /// OUVERTURE FICHIER
     std::ifstream ifs{nomFichier};
@@ -204,31 +203,32 @@ std::vector<Sommet*> graphe::getSommets()
 {
     return m_sommets;
 }
-/*
 
 
-graphe graphe::prim()
+
+graphe graphe::prim(int num)
 {
-    int i=0;
+    int i=0,k;
     ///  Crée un graphe vide
 
     graphe G;
 
-    std::string id="0",id_voisin;
+
+    int id=0,id_voisin;
     std::vector<Arete*> aretes;
     std::vector<float> cou;
-    std::string idd;
+    int idd;
+    float c;
     std::vector<Sommet*> sommets_decouverts;
     Sommet* so;
-    (m_sommets.find(id))->second->selectionner();
+    m_sommets[id]->selectionner();
     /// Selectionne un sommet et l'ajoute au graphe vide
-    Sommet* s=(m_sommets.find(id))->second;
+    Sommet* s=m_sommets[id];
     G.ajouterSommet(s);
     /// Parcourir tous les sommets du graphes de bases
     do
     {
-
-        std::vector<const Sommet*> voisins=(m_sommets.find(id))->second->getVoisins();
+        std::vector<const Sommet*> voisins=m_sommets[id]->getVoisins();
         /// Parmis les voisins du sommets choisi, trouver les aretes correspondantes
         for(auto y : voisins)
         {
@@ -236,17 +236,18 @@ graphe graphe::prim()
             /// regarder parmis toutes les aretes du graphe laquelle relis les deux sommets avec leur ID
             for(auto a : m_aretes)
             {
-                if(a.second->getBool() != 1)
+                if(a->getBool() != 1)
                 {
 
-                    std::vector<std::string> sommets = a.second->getSommets();
-                    std::string num = (m_sommets.find(id))->second->getId(); /// Recuperer ID du sommet initiale
+                    std::vector<int> sommets = a->getSommets();
+                    int num = m_sommets[id]->getId(); /// Recuperer ID du sommet initiale
 
                     if(( num == sommets[0])||(num == sommets[1]))  /// Si l'id du sommet initial correspond a une arrete
                         if((id_voisin==sommets[0])||(id_voisin==sommets[1])) /// Si l'id du sommet voisin correspond a la meme arrete
                         {
-                            aretes.push_back(a.second);
-                            a.second->utiliser(); /// "marquer" l'arete utilisée pour pas qu'on la reprenne
+                            aretes.push_back(a);
+                            a->utiliser(); /// "marquer" l'arete utilisée pour pas qu'on la reprenne
+
                         }
                 }
             }
@@ -259,10 +260,19 @@ graphe graphe::prim()
         {
             if(tri->getSelection()!=1)
             {
+                if(num==1)
+                {
                 cou.push_back(tri->getCout1());
+                }
+                if(num==2)
+                {
+                cou.push_back(tri->getCout2());
+                }
+
             }
         }
         std::sort(cou.begin(), cou.end()); /// on range tous les coût par ordre croissant
+
 
         for(auto tri : aretes)
         {
@@ -270,45 +280,123 @@ graphe graphe::prim()
 
             if(tri->getSelection()!=1)
             {
+                if(num==1)
+                {
+                    c=tri->getCout1();
+                }
+                if(num==2)
+                {
+                    c=tri->getCout2();
+                }
+                if((cou[i])==c)
+                {
 
-                    if((cou[0])==(tri->getCout1())) ///  REGLER LE PB EN CAS D'EGALITE CHOISIR 1 ARRETE PAS LES DEUX
-                    {
-
-
-
-                        cou.clear();
-                        G.ajouterArete(tri);
-                        tri->selectionner(); ///  Bool 0 -> 1
-
-                        idd = tri->getId_sommet1();
-                        if(idd==id)
+                    idd = tri->getId_sommet1();
+                    if(idd==id)
                             idd = tri->getId_sommet2();
+                    for(auto verif : sommets_decouverts)
+                    {
+                        if(idd == (verif->getId()))
+                            {
+                                idd = tri->getId_sommet2();
+                                for(auto veri : sommets_decouverts)
+                                {
+                                    if(idd == (veri->getId()))
+                                    {
+                                        i++;
+                                    }
 
+                                }
+                            }
+                    }
 
-                        so=(m_sommets.find(idd))->second;
-                        if(so->getSelection()!=1)
+                        so=m_sommets[idd];
+                        if(so->getSelection() != 1)
                         {
+                            cou.clear();
+
+                            G.ajouterArete(tri);
+                            tri->selectionner(); ///  Bool 0 -> 1
                             G.ajouterSommet(so);
+
+                            m_sommets[idd]->selectionner(); ///  Bool 0 -> 1
+                            sommets_decouverts=G.getSommets();
+
                             id=idd;
-                            (m_sommets.find(idd))->second->selectionner();
-                            so->afficherData();
+
                         }
+
 
                     }
 
-
-            }
+                }
         }
 
     }
     while(m_sommets.size()!=(G.getSommets()).size());
-    G.afficher();
-
 
     return G;
 }
 
-*/
+void graphe::dessinerGraphe()
+{
+    //initialisation allegro
+
+    BITMAP*buffer;
+    BITMAP*fond;
+    buffer=create_bitmap(800,600);
+    fond=load_bitmap("fond.bmp",NULL);
+    int boutton=0;
+    int boutton1=0;
+    int boutton2=0;
+     if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0)!=0)
+    {
+        allegro_message("probleme mode graphique");
+        allegro_exit();
+        exit(EXIT_FAILURE);
+    }
+    show_mouse(screen);
+     while (!key[KEY_ESC])//ne pas sortir de la boucle
+    {
+
+
+    draw_sprite(buffer,fond,0,0);
+    rectfill(buffer,300,300,500,400,makecol(0,0,255));
+    if (mouse_x>=300 && mouse_x<=500 && mouse_y>=300 && mouse_y<=400 && mouse_b & 1)
+    {
+        clear_to_color(buffer, makecol(255,255,255));
+        draw_sprite(buffer,fond,0,0);
+
+      //  for (auto a:m_aretes)
+      for(size_t i=0;i<sizeof(m_aretes);i++)
+     {
+         int idd1=m_aretes[i]->getId_sommet1();// on prend le numero des sommets de l'arête
+         int idd2=m_aretes[i]->getId_sommet2();
+         Sommet*s=(m_sommets[idd1]);
+         Sommet*p= (m_sommets[idd2]);
+         line(buffer,s->getX()*1.5,s->getY()*1.5,p->getX()*1.5,p->getY()*1.5,makecol(0,0,255));
+         textprintf_ex(buffer,font,(((s->getX()+p->getX())/2)-10)*1.5,(((s->getY()+p->getY())/2)-5)*1.5,makecol(0,0,255),-1,"%d",m_aretes[i]->getId());//affichage arête
+       //  textprintf_ex(screen,font,((s->getX()+p->getX()/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC1().c_str());//affichage numéro arête
+        //textprintf_ex(screen,font,((s->getX()+p->getX()/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC2().c_str());//affichage numéro arête
+     }
+     //dessin des sommets
+   // for(auto a:m_sommets)
+   for(size_t i=0;i<sizeof(m_sommets);i++)
+    {
+        circlefill(buffer,(m_sommets[i]->getX())*1.5,(m_sommets[i]->getY())*1.5,15,makecol(0,0,255));//affichage sommet
+        textprintf_ex(buffer,font,(m_sommets[i]->getX()-2)*1.5,(m_sommets[i]->getY()-2)*1.5,makecol(255,255,255),-1,"%d",m_sommets[i]->getId());//affichage numero du sommet
+    }
+    /*boutton1=draw_bouton(buffer,800/2-25,600/2+100,800/2-25+60,600/2+30+100,makecol(228,22,84),makecol(239,99,141),3,"QUITTER");
+    boutton=draw_bouton(buffer,800/2-25,600/2,800/2-25+60,600/2+30,makecol(36,172,217),makecol(168,222,240),3,"RESUME");
+    boutton2=draw_bouton(buffer,800/2-25,600/2+50,800/2-25+60,600/2+30+50,makecol(36,172,217),makecol(168,222,240),3,"REJOUER");*/
+
+    }
+    draw_sprite(screen,buffer,0,0);
+    }
+}
+
+
+
 graphe::~graphe()
 {
     //dtor

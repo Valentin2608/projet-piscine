@@ -14,7 +14,8 @@ void Sommet::ajouterVoisin(const Sommet* voisin)
 }
 void Sommet::afficherData() const
 {
-    std::cout<<"    "<<m_id<<" : "<<"(x,y)=("<<m_x<<","<<m_y<<")"<<std::endl;
+    std::cout<<"    "<<m_id<<" : "<<"(x,y)=("<<m_x<<","<<m_y<<")"<<std::endl
+    << "selectionner : " << m_selectionner << std::endl;
 }
 void Sommet::afficherVoisins() const
 {
@@ -25,6 +26,15 @@ void Sommet::afficherVoisins() const
     }
 }
 
+double Sommet::getX()
+{
+    return m_x;
+}
+
+double Sommet::getY()
+{
+    return m_y;
+}
 
 void Sommet::selectionner()
 {

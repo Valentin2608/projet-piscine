@@ -27,6 +27,8 @@ class Sommet
         std::vector<const Sommet*> getVoisins() const;
         bool getSelection();
         void selectionner();
+        double getX();
+        double getY();
 
     protected:
 
