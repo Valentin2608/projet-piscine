@@ -10,7 +10,7 @@ graphe::graphe()
 
 graphe::graphe(std::string nomFichier, std::string nomFichier2)
 {
-        /// OUVERTURE DU FICHIER PONDERATION
+    /// OUVERTURE DU FICHIER PONDERATION
     std::ifstream pfs{nomFichier2};
     if (!pfs)
         throw std::runtime_error( "Impossible d'ouvrir en lecture " + nomFichier2 );
@@ -169,20 +169,20 @@ int graphe::rechercher_afficherToutesCC() const
     {
         if(i<3)
         {
-        Sommet* s0=a.second;
-        cc=s0->rechercherCC();
-        if((cc!=pred))
-        {
-            i++;
-            std::cout<< "   cc" << i << std::endl;
-            for(auto s:cc)
+            Sommet* s0=a.second;
+            cc=s0->rechercherCC();
+            if((cc!=pred))
             {
-                std::cout<< "     " << s;
+                i++;
+                std::cout<< "   cc" << i << std::endl;
+                for(auto s:cc)
+                {
+                    std::cout<< "     " << s;
+                }
+                std::cout<< std::endl;
             }
-            std::cout<< std::endl;
-        }
-        pred=cc;
-        cc.clear();
+            pred=cc;
+            cc.clear();
         }
     }
 
@@ -206,6 +206,7 @@ std::unordered_map<std::string,Sommet*> graphe::getSommets()
 
 graphe graphe::prim()
 {
+    int i=0;
     ///  Crée un graphe vide
 
     graphe G;
@@ -214,17 +215,19 @@ graphe graphe::prim()
     std::vector<Arete*> aretes;
     std::vector<float> cou;
     std::string idd;
+    Sommet* so;
+    (m_sommets.find(id))->second->selectionner();
     /// Selectionne un sommet et l'ajoute au graphe vide
     Sommet* s=(m_sommets.find(id))->second;
     G.ajouterSommet(s);
     /// Parcourir tous les sommets du graphes de bases
-    do{
-        std::cout << id;
+    do
+    {
+
         std::vector<const Sommet*> voisins=(m_sommets.find(id))->second->getVoisins();
         /// Parmis les voisins du sommets choisi, trouver les aretes correspondantes
         for(auto y : voisins)
         {
-            std::cout << id;
             id_voisin = y->getId(); /// prendre ID du voisin
             /// regarder parmis toutes les aretes du graphe laquelle relis les deux sommets avec leur ID
             for(auto a : m_aretes)
@@ -232,11 +235,11 @@ graphe graphe::prim()
                 if(a.second->getBool() != 1)
                 {
 
-                std::vector<std::string> sommets = a.second->getSommets();
-                std::string num = (m_sommets.find(id))->second->getId(); /// Recuperer ID du sommet initiale
+                    std::vector<std::string> sommets = a.second->getSommets();
+                    std::string num = (m_sommets.find(id))->second->getId(); /// Recuperer ID du sommet initiale
 
-                if(( num == sommets[0])||(num == sommets[1]))  /// Si l'id du sommet initial correspond a une arrete
-                    if((id_voisin==sommets[0])||(id_voisin==sommets[1])) /// Si l'id du sommet voisin correspond a la meme arrete
+                    if(( num == sommets[0])||(num == sommets[1]))  /// Si l'id du sommet initial correspond a une arrete
+                        if((id_voisin==sommets[0])||(id_voisin==sommets[1])) /// Si l'id du sommet voisin correspond a la meme arrete
                         {
                             aretes.push_back(a.second);
                             a.second->utiliser(); /// "marquer" l'arete utilisée pour pas qu'on la reprenne
@@ -246,35 +249,57 @@ graphe graphe::prim()
 
         }
 
-            /// A REVOIR
-            /// Une fois que les arrêtes relies au sommet initiale sont trouvées
-            for(auto tri : aretes)
+        /// A REVOIR
+        /// Une fois que les arrêtes relies au sommet initiale sont trouvées
+        for(auto tri : aretes)
+        {
+            if(tri->getSelection()!=1)
             {
                 cou.push_back(tri->getCout1());
             }
-            std::sort(cou.begin(), cou.end());
-            for(auto tri : aretes)
+        }
+        std::sort(cou.begin(), cou.end());
+
+        for(auto tri : aretes)
+        {
+
+
+            if(tri->getSelection()!=1)
             {
-                if(tri->getSelection()!=1)
-                {
-                if((cou[0])==(tri->getCout1()))
+
+                    if((cou[0])==(tri->getCout1())) ///  REGLER LE PB EN CAS D'EGALITE CHOISIR 1 ARRETE PAS LES DEUX
                     {
+
+
+
+                        cou.clear();
                         G.ajouterArete(tri);
                         tri->selectionner(); ///  Bool 0 -> 1
-                        idd = tri->getId_sommet2();
+
+                        idd = tri->getId_sommet1();
                         if(idd==id)
-                            idd = tri->getId_sommet1(); /// CA MARCHE PAS CA RESTE A 2
-                        Sommet* so=(m_sommets.find(idd))->second;
-                        G.ajouterSommet(so);
-                        id=idd;
+                            idd = tri->getId_sommet2();
+
+
+                        so=(m_sommets.find(idd))->second;
+                        if(so->getSelection()!=1)
+                        {
+                            G.ajouterSommet(so);
+                            id=idd;
+                            (m_sommets.find(idd))->second->selectionner();
+                            so->afficherData();
+                        }
+
                     }
 
-                }
+
             }
+        }
 
-    }while(m_sommets.size()!=(G.getSommets()).size());
+    }
+    while(m_sommets.size()!=(G.getSommets()).size());
+    G.afficher();
 
-        G.afficher();
 
     return G;
 }

@@ -59,9 +59,10 @@ void Arete::AjouterSommets(std::string s1,std::string s2)
 
 void Arete::AfficherArete() const
 {
-    std::cout << "numero arete :" << m_id << std::endl
+    std::cout << "numero :" << m_id << std::endl
     << "Cout 1 : " << m_c1 << "  Cout 2 : " << m_c2 << std::endl
-    << "l'arete depend des sommets numero " << m_id_sommet[0] << " et " << m_id_sommet[1] << std::endl;
+    << "l'arete depend des sommets numero " << m_id_sommet[0] << " et " << m_id_sommet[1] << std::endl
+    << " selectionner " << m_selectionner << std::endl;
 }
 
 std::string Arete::getId() const

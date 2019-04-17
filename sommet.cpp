@@ -25,6 +25,18 @@ void Sommet::afficherVoisins() const
     }
 }
 
+
+void Sommet::selectionner()
+{
+    m_selectionner=1;
+}
+
+bool Sommet::getSelection()
+{
+    return m_selectionner;
+}
+
+
 std::string Sommet::getId() const
 {
     return m_id;

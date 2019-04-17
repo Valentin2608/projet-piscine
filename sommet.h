@@ -25,6 +25,8 @@ class Sommet
         std::unordered_set<std::string> rechercherCC();
         std::string getId() const;
         std::vector<const Sommet*> getVoisins() const;
+        bool getSelection();
+        void selectionner();
 
     protected:
 
@@ -35,6 +37,7 @@ class Sommet
         /// Données spécifiques du sommet
         std::string m_id; // Identifiant
         double m_x, m_y; // Position
+        bool m_selectionner=0;
 
 };
 
