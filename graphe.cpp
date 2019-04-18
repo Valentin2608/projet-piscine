@@ -208,7 +208,7 @@ std::vector<Sommet*> graphe::getSommets()
 
 graphe graphe::prim(int num)
 {
-    int i=0,k;
+    int i=0,k,u=0;
     ///  Crée un graphe vide
 
     graphe G;
@@ -218,7 +218,7 @@ graphe graphe::prim(int num)
     std::vector<Arete*> aretes;
     std::vector<float> cou;
     int idd;
-    float c;
+    float c,c2;
     std::vector<Sommet*> sommets_decouverts;
     Sommet* so;
     m_sommets[id]->selectionner();
@@ -228,6 +228,9 @@ graphe graphe::prim(int num)
     /// Parcourir tous les sommets du graphes de bases
     do
     {
+        u++;
+        std::cout << "   etape   " << u << std::endl;
+
         std::vector<const Sommet*> voisins=m_sommets[id]->getVoisins();
         /// Parmis les voisins du sommets choisi, trouver les aretes correspondantes
         for(auto y : voisins)
@@ -247,7 +250,7 @@ graphe graphe::prim(int num)
                         {
                             aretes.push_back(a);
                             a->utiliser(); /// "marquer" l'arete utilisée pour pas qu'on la reprenne
-
+                            //a->AfficherArete();
                         }
                 }
             }
@@ -256,7 +259,7 @@ graphe graphe::prim(int num)
 
         /// A REVOIR
         /// Une fois que les arrêtes relies au sommet initiale sont trouvées
-        for(auto tri : aretes)
+    /*    for(auto tri : aretes)
         {
             if(tri->getSelection()!=1)
             {
@@ -271,9 +274,26 @@ graphe graphe::prim(int num)
 
             }
         }
-        std::sort(cou.begin(), cou.end()); /// on range tous les coût par ordre croissant
+         std::sort(cou.begin(), cou.end()); /// on range tous les coût par ordre croissant
+         */
+        if(num==1)
+                {
+                    std::sort(aretes.begin(),aretes.end(),[](Arete* s1, Arete* s2){
+              return s1->getCout1() < s2->getCout1();});
+                }
+        if(num==2)
+                {
+                    std::sort(aretes.begin(),aretes.end(),[](Arete* s1, Arete* s2){
+              return s1->getCout2() < s2->getCout2();});
+                }
 
-
+       /*  for(auto tri : aretes)
+        {
+             std::cout <<std::endl << " couut " ;
+        //  tri->AfficherArete();
+          std::cout << " couut " <<std::endl;
+        }*/
+        k=0,i=0;
         for(auto tri : aretes)
         {
 
@@ -283,12 +303,19 @@ graphe graphe::prim(int num)
                 if(num==1)
                 {
                     c=tri->getCout1();
+                    c2=aretes[i]->getCout1();
                 }
                 if(num==2)
                 {
                     c=tri->getCout2();
+                    c2=aretes[i]->getCout2();
                 }
-                if((cou[i])==c)
+                //if((cou[i])==c)
+               // std::cout << "numero cout" << i << std::endl;
+                //tri->AfficherArete();
+                //aretes[i]->AfficherArete();
+               // std::cout << std::endl;
+                if(c==c2)
                 {
 
                     idd = tri->getId_sommet1();
@@ -301,7 +328,7 @@ graphe graphe::prim(int num)
                                 idd = tri->getId_sommet2();
                                 for(auto veri : sommets_decouverts)
                                 {
-                                    if(idd == (veri->getId()))
+                                    if(idd == (veri->getId())&&(i==0))
                                     {
                                         i++;
                                     }
@@ -311,19 +338,28 @@ graphe graphe::prim(int num)
                     }
 
                         so=m_sommets[idd];
+                       // so->afficherData();
                         if(so->getSelection() != 1)
                         {
-                            cou.clear();
+                            //cou.clear();
+                            if(k==0)
+                            {
+                               // std::cout << "ici";
+                                aretes.erase(aretes.begin()+i);
+                                id=idd;
+                                G.ajouterArete(tri);
+                                tri->selectionner(); ///  Bool 0 -> 1
+                                G.ajouterSommet(so);
+                                tri->AfficherArete();
 
-                            G.ajouterArete(tri);
-                            tri->selectionner(); ///  Bool 0 -> 1
-                            G.ajouterSommet(so);
+                                m_sommets[idd]->selectionner(); ///  Bool 0 -> 1
+                                sommets_decouverts=G.getSommets();
+                            }
 
-                            m_sommets[idd]->selectionner(); ///  Bool 0 -> 1
-                            sommets_decouverts=G.getSommets();
 
-                            id=idd;
 
+
+                            k++;
                         }
 
 
@@ -335,21 +371,41 @@ graphe graphe::prim(int num)
     }
     while(m_sommets.size()!=(G.getSommets()).size());
 
+   // std::sort(sommets_decouverts.begin(), sommets_decouverts.end(), [](Sommet* s1, Sommet* s2){
+      //        return s1->getId() < s2->getId();
+       //       });
+
+    G.ajouterSommets(m_sommets);
+
     return G;
+}
+
+void graphe::ajouterSommets(std::vector<Sommet*> som)
+{
+    m_sommets=som;
+}
+
+void graphe::ajouterAretes(std::vector<Arete*> som)
+{
+    m_aretes=som;
 }
 
 void graphe::dessinerGraphe()
 {
+    allegro_init();
+    install_keyboard();
+    install_mouse();
+    set_color_depth(desktop_color_depth());
+    set_gfx_mode(GFX_AUTODETECT_WINDOWED,1200,800,0,0);
+
     //initialisation allegro
 
     BITMAP*buffer;
     BITMAP*fond;
-    buffer=create_bitmap(800,600);
+    buffer=create_bitmap(1200,800);
     fond=load_bitmap("fond.bmp",NULL);
-    int boutton=0;
-    int boutton1=0;
-    int boutton2=0;
-     if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0)!=0)
+
+     if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,1200,800,0,0)!=0)
     {
         allegro_message("probleme mode graphique");
         allegro_exit();
@@ -366,29 +422,26 @@ void graphe::dessinerGraphe()
     {
         clear_to_color(buffer, makecol(255,255,255));
         draw_sprite(buffer,fond,0,0);
-
-      //  for (auto a:m_aretes)
-      for(size_t i=0;i<sizeof(m_aretes);i++)
+    for (auto a:m_aretes)
      {
-         int idd1=m_aretes[i]->getId_sommet1();// on prend le numero des sommets de l'arête
-         int idd2=m_aretes[i]->getId_sommet2();
-         Sommet*s=(m_sommets[idd1]);
-         Sommet*p= (m_sommets[idd2]);
+         int idd1=a->getId_sommet1();// on prend le numero des sommets de l'arête
+         int idd2=a->getId_sommet2();
+         Sommet* s=(m_sommets[idd1]);
+         Sommet* p=(m_sommets[idd2]);
          line(buffer,s->getX()*1.5,s->getY()*1.5,p->getX()*1.5,p->getY()*1.5,makecol(0,0,255));
-         textprintf_ex(buffer,font,(((s->getX()+p->getX())/2)-10)*1.5,(((s->getY()+p->getY())/2)-5)*1.5,makecol(0,0,255),-1,"%d",m_aretes[i]->getId());//affichage arête
-       //  textprintf_ex(screen,font,((s->getX()+p->getX()/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC1().c_str());//affichage numéro arête
+         textprintf_ex(buffer,font,(((s->getX()+p->getX())/2)-10)*1.5,(((s->getY()+p->getY())/2)-5)*1.5,makecol(0,0,255),-1,"%d",a->getId());//affichage arête
+        // textprintf_ex(screen,font,((s->getX()+p->getX()/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC1().c_str());//affichage numéro arête
         //textprintf_ex(screen,font,((s->getX()+p->getX()/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC2().c_str());//affichage numéro arête
+
      }
      //dessin des sommets
-   // for(auto a:m_sommets)
-   for(size_t i=0;i<sizeof(m_sommets);i++)
+    for(auto a:m_sommets)
     {
-        circlefill(buffer,(m_sommets[i]->getX())*1.5,(m_sommets[i]->getY())*1.5,15,makecol(0,0,255));//affichage sommet
-        textprintf_ex(buffer,font,(m_sommets[i]->getX()-2)*1.5,(m_sommets[i]->getY()-2)*1.5,makecol(255,255,255),-1,"%d",m_sommets[i]->getId());//affichage numero du sommet
+
+        circlefill(buffer,(a->getX())*1.5,(a->getY())*1.5,15,makecol(0,0,255));//affichage sommet
+        textprintf_ex(buffer,font,(a->getX()-2)*1.5,(a->getY()-2)*1.5,makecol(255,255,255),-1,"%d",a->getId());//affichage numero du sommet
     }
-    /*boutton1=draw_bouton(buffer,800/2-25,600/2+100,800/2-25+60,600/2+30+100,makecol(228,22,84),makecol(239,99,141),3,"QUITTER");
-    boutton=draw_bouton(buffer,800/2-25,600/2,800/2-25+60,600/2+30,makecol(36,172,217),makecol(168,222,240),3,"RESUME");
-    boutton2=draw_bouton(buffer,800/2-25,600/2+50,800/2-25+60,600/2+30+50,makecol(36,172,217),makecol(168,222,240),3,"REJOUER");*/
+
 
     }
     draw_sprite(screen,buffer,0,0);

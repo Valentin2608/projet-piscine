@@ -32,8 +32,9 @@ class graphe
         void ajouterSommet(Sommet *s);
         void ajouterArete(Arete *s);
         std::vector<Sommet*> getSommets();
+        void ajouterSommets(std::vector<Sommet*> som);
+        void ajouterAretes(std::vector<Arete*> som);
         void dessinerGraphe();
-
 
     protected:
 
