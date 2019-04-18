@@ -15,18 +15,12 @@ class Sommet
         void ajouterVoisin(const Sommet*);
         void afficherData() const;
         void afficherVoisins() const;
-        ///méthode de parcours en largeur du graphe à partir du sommet
-        ///renvoie les prédécesseurs sous forme d'une map (clé=id du sommet,valeur=id de son prédécesseur)
-        std::unordered_map<std::string,std::string> parcoursBFS() const;
-         ///méthode de parcours en profondeur du graphe à partir du sommet
-        std::unordered_map<std::string,std::string> parcoursDFS() const;
-        ///méthode qui recherche la composante connexe du sommet
-        ///renvoie la liste des ids des sommets de la composante
-        std::unordered_set<std::string> rechercherCC();
+
         int getId() const;
         std::vector<const Sommet*> getVoisins() const;
         bool getSelection();
-        void selectionner();
+        void selectionner(bool a);
+        std::unordered_set<int> rechercherCC ( ) const;
         double getX();
         double getY();
 

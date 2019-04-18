@@ -17,17 +17,7 @@ class graphe
         graphe();
         ~graphe();
         void afficher() const;
-        ///lance un parcours en largeur à partir du sommet d'identifiant id
-        void parcoursBFS(std::string) const;
-        ///lance et affiche le parcours en largeur à partir du sommet d'identifiant id
-        void afficherBFS(std::string) const;
-         ///lance un parcours en profondeur à partir du sommet d'identifiant id
-        void parcoursDFS(std::string) const;
-        ///lance et affiche le parcours en profondeur à partir du sommet d'identifiant id
-        void afficherDFS(std::string) const;
-        ///recherche et affiche les composantes connexes
-        ///retourne le nombre de composantes connexes
-        int rechercher_afficherToutesCC() const;
+
         graphe prim(int num);
         void ajouterSommet(Sommet *s);
         void ajouterArete(Arete *s);
@@ -35,6 +25,14 @@ class graphe
         void ajouterSommets(std::vector<Sommet*> som);
         void ajouterAretes(std::vector<Arete*> som);
         void dessinerGraphe();
+        void CalculPoidsTotaux();
+        float getPoidsTotal1();
+        float getPoidsTotal2();
+
+        std::vector<graphe> creerGraphes(std::vector<std::vector<int>> tab);
+        std::vector<std::vector<int>> bruteForce(int a,int b);
+        int rechercher_afficherToutesCC ( ) const;
+         std::vector<graphe> trierpourpareto(std::vector<graphe> grapheN);
 
     protected:
 
@@ -42,6 +40,9 @@ class graphe
         /// Le réseau est constitué d'une collection de sommets
         std::vector<Sommet*> m_sommets;///stockée dans une map (clé=id du sommet, valeur= pointeur sur le sommet)
         std::vector<Arete*> m_aretes; /// clé= id de l'arete, valeur = pointeur sur arete
+        float m_coutTot1=0;
+        float m_coutTot2=0;
+        int nb_sommets,nb_aretes;
 };
 
 #endif // GRAPHE_H

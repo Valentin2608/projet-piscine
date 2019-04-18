@@ -36,11 +36,33 @@ double Sommet::getY()
     return m_y;
 }
 
-void Sommet::selectionner()
+std::unordered_set<int> Sommet::rechercherCC ( ) const
 {
-    m_selectionner=1;
+	std::unordered_set<int> cc;
+	std::stack<const Sommet*> stack;
+	stack.push ( this );
+	cc.insert ( m_id );
+	while ( !stack.empty ( ) )
+	{
+		const Sommet* courant = stack.top ( );
+		stack.pop ( );
+		for ( const auto& a : courant->m_voisins )
+		{
+			if ( cc.find ( a->m_id ) == cc.end ( ) )
+			{
+				cc.insert ( a->m_id );
+				stack.push ( a );
+			}
+		}
+	}
+	return cc;
 }
 
+
+void Sommet::selectionner(bool a)
+{
+    m_selectionner=a;
+}
 bool Sommet::getSelection()
 {
     return m_selectionner;
@@ -62,72 +84,4 @@ Sommet::~Sommet()
     //dtor
 }
 
-/*std::unordered_map<std::string,std::string> Sommet::parcoursBFS() const
-{
-    std::unordered_map<std::string,std::string> l_pred;
-    std::queue<const Sommet*> file;
-    file.push(this);
-    const Sommet* s;
-    while(!file.empty())
-    {
-        s=file.front();
-        file.pop();
-        for(size_t i=0; i<s->m_voisins.size(); ++i)
-        {
-            if((l_pred.find(s->m_voisins[i]->m_id)==l_pred.end()) && s->m_voisins[i]!=this)
-            {
-                file.push(s->m_voisins[i]);
-                l_pred.insert({s->m_voisins[i]->m_id,s->m_id});
-            }
-        }
-    }
-
-    file.push(this);
-
-
-    return l_pred;
-}
-std::unordered_map<std::string,std::string> Sommet::parcoursDFS() const
-{
-    std::unordered_map<std::string,std::string> l_pred;
-    std::stack<const Sommet*> pile;
-    pile.push(this);
-    const Sommet* s;
-    while(!pile.empty())
-    {
-        s=pile.top();
-        pile.pop();
-        for(size_t i=0; i<s->m_voisins.size(); ++i)
-        {
-            if((l_pred.find(s->m_voisins[i]->m_id)==l_pred.end()) && s->m_voisins[i]!=this)
-            {
-                pile.push(s->m_voisins[i]);
-                l_pred.insert({s->m_voisins[i]->m_id,s->m_id});
-            }
-        }
-    }
-
-    pile.push(this);
-    return l_pred;
-}
-std::unordered_set<std::string> Sommet::rechercherCC()
-{
-    std::unordered_set<std::string> file;
-    std::unordered_map<std::string,std::string> l_pred=this->parcoursBFS();
-    file.insert(m_id);
-    for(auto s:l_pred)
-    {
-        file.insert(s.first);
-
-        std::pair<std::string,std::string> pred=s;
-        while(pred.second!=m_id)
-        {
-                    pred=*l_pred.find(pred.second);
-                    file.insert(pred.first);
-        }
-    }
-    return file;
-}
-
-*/
 

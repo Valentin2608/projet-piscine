@@ -47,6 +47,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
     ifs >> ordre;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture ordre du graphe");
+    nb_sommets=ordre;
     int id;
     double x,y;
     //lecture des sommets
@@ -67,6 +68,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
     ifs >> taille;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture taille du graphe");
+    nb_aretes=taille;
     int id2,id_s1,id_s2;
     //lecture des aretes
     for (int i=0; i<taille; ++i)
@@ -110,85 +112,6 @@ void graphe::afficher() const
 }
 
 
-/// A enlever si on a plus besoin à la fin
-/*void graphe::parcoursBFS(std::string id) const
-{
-    Sommet* s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    l_pred=s0->parcoursBFS();
-}
-void graphe::afficherBFS(std::string id) const
-{
-    Sommet* s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    std::cout<<"parcoursBFS a partir de "<<id<<" :"<<std::endl;
-    l_pred=s0->parcoursBFS();
-    for(auto s:l_pred)
-    {
-        std::cout<<s.first<<" <--- ";
-        std::pair<std::string,std::string> pred=s;
-        while(pred.second!=id)
-        {
-            pred=*l_pred.find(pred.second);
-            std::cout<<pred.first<<" <--- ";
-        }
-        std::cout<<id<<std::endl;
-    }
-}
-void graphe::parcoursDFS(std::string id) const
-{
-    Sommet*s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    l_pred=s0->parcoursDFS();
-}
-void graphe::afficherDFS(std::string id) const
-{
-    Sommet*s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    std::cout<<"parcoursDFS a partir de "<<id<<" :"<<std::endl;
-    l_pred=s0->parcoursDFS();
-    for(auto s:l_pred)
-    {
-        std::cout<<s.first<<" <--- ";
-        std::pair<std::string,std::string> pred=s;
-        while(pred.second!=id)
-        {
-            pred=*l_pred.find(pred.second);
-            std::cout<<pred.first<<" <--- ";
-        }
-        std::cout<<id<<std::endl;
-    }
-}
-int graphe::rechercher_afficherToutesCC() const
-{
-    int i=0;
-    std::cout<<"composantes connexes :"<<std::endl;
-    std::unordered_set<std::string> pred,cc;
-
-    for(auto a:m_sommets)
-    {
-        if(i<3)
-        {
-            Sommet* s0=a.second;
-            cc=s0->rechercherCC();
-            if((cc!=pred))
-            {
-                i++;
-                std::cout<< "   cc" << i << std::endl;
-                for(auto s:cc)
-                {
-                    std::cout<< "     " << s;
-                }
-                std::cout<< std::endl;
-            }
-            pred=cc;
-            cc.clear();
-        }
-    }
-
-    return i;
-}
-*/
 void graphe::ajouterSommet(Sommet* s)
 {
     m_sommets.push_back(s);
@@ -204,7 +127,167 @@ std::vector<Sommet*> graphe::getSommets()
     return m_sommets;
 }
 
+void graphe::CalculPoidsTotaux()
+{
+    float coutTot1=0;
+    float coutTot2=0;
 
+     for (auto b:m_aretes)
+    {
+        coutTot1=coutTot1+b->getCout1();
+
+    }
+
+    m_coutTot1= coutTot1;
+     for (auto a:m_aretes)
+    {
+        coutTot2=coutTot2+a->getCout2();
+
+    }
+   m_coutTot2=coutTot2;
+}
+
+float graphe:: getPoidsTotal2()
+{
+    return m_coutTot2;
+}
+float graphe::getPoidsTotal1()
+{
+    return m_coutTot1;
+
+}
+
+int graphe::rechercher_afficherToutesCC ( ) const
+{
+	int i = 0, nb=0;
+	std::unordered_set<int> set;
+	for ( auto& a : m_sommets )
+	{
+	    a->selectionner(0);
+	}
+	for ( auto& a : m_sommets )
+	{
+		if ( set.find ( a->getId() ) == set.end ( ) )
+            {
+			++i;
+			std::unordered_set<int> temp = a->rechercherCC ( );
+			set.insert ( temp.begin ( ) , temp.end ( ) );
+            }
+	}
+	for(auto& b : m_aretes)
+    {
+        m_sommets[b->getId_sommet1()]->selectionner(1);
+        m_sommets[b->getId_sommet2()]->selectionner(1);
+    }
+    for ( auto& a : m_sommets )
+	{
+	    if(a->getSelection()==1)
+            nb++;
+	}
+	if(nb!=m_sommets.size())
+        i++;
+	return i;
+}
+
+
+
+std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
+{
+    std::vector<std::vector<int>> res;
+
+    std::vector<int> tmp(a);
+
+    for (int i = 0; i < b; i++)
+        tmp[i] = i;
+
+    while (tmp[0] < b-a+1)
+    {
+        int j = a - 1;
+
+        res.push_back(tmp);
+
+        tmp[j] += 1;
+
+        int lim = b;
+
+        int cpt = 0;
+
+        while(j > 0)
+        {
+            if (tmp[j] >= lim)
+            {
+                j -= 1;
+                lim -= 1;
+                tmp[j] += 1;
+                cpt++;
+            }
+
+            else
+                j = -1;
+        }
+
+        for (int i = a - cpt; i < a; i ++)
+            tmp[i] = tmp[i - 1] + 1;
+    }
+
+    return res;
+}
+
+std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
+{
+
+    std::vector<graphe> pourpareto;
+
+    int recupIDA;
+
+
+    for (auto a:tab)
+    {
+
+      graphe g;
+        for(auto b :m_sommets)
+        {
+            g.ajouterSommet(b);
+        }
+
+    for (auto i=0;i<nb_sommets-1;i++)
+    {
+
+        recupIDA=a[i];
+        g.ajouterArete(m_aretes[recupIDA]);
+
+    }
+
+     pourpareto.push_back(g);
+
+    }
+
+    return pourpareto;
+
+}
+
+ std::vector<graphe> graphe::trierpourpareto(std::vector<graphe> grapheN)
+{
+     std::vector<graphe> pareto;
+    int nb_composantes_connexes;
+    int i=0;
+    for (auto a:grapheN)
+    {
+
+
+        nb_composantes_connexes=a.rechercher_afficherToutesCC();
+        if(nb_composantes_connexes==1)
+        {
+          pareto.push_back(a);
+        }
+        i++;
+    }
+    return pareto;
+
+
+
+
+}
 
 graphe graphe::prim(int num)
 {
@@ -221,7 +304,7 @@ graphe graphe::prim(int num)
     float c,c2;
     std::vector<Sommet*> sommets_decouverts;
     Sommet* so;
-    m_sommets[id]->selectionner();
+    m_sommets[id]->selectionner(1);
     /// Selectionne un sommet et l'ajoute au graphe vide
     Sommet* s=m_sommets[id];
     G.ajouterSommet(s);
@@ -353,7 +436,7 @@ graphe graphe::prim(int num)
                                 G.ajouterSommet(so);
                                 tri->AfficherArete();
 
-                                m_sommets[idd]->selectionner(); ///  Bool 0 -> 1
+                                m_sommets[idd]->selectionner(1); ///  Bool 0 -> 1
                                 sommets_decouverts=G.getSommets();
 
                             }
