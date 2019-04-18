@@ -112,6 +112,38 @@ void graphe::afficher() const
     }
 }
 
+int graphe::rechercher_afficherToutesCC ( ) const
+{
+	int i = 0, nb=0;
+	std::unordered_set<int> set;
+	for ( auto& a : m_sommets )
+	{
+	    a->selectionner(0);
+	}
+	for ( auto& a : m_sommets )
+	{
+		if ( set.find ( a->getId() ) == set.end ( ) )
+            {
+			++i;
+			std::unordered_set<int> temp = a->rechercherCC ( );
+			set.insert ( temp.begin ( ) , temp.end ( ) );
+            }
+	}
+	for(auto& b : m_aretes)
+    {
+        m_sommets[b->getId_sommet1()]->selectionner(1);
+        m_sommets[b->getId_sommet2()]->selectionner(1);
+    }
+    for ( auto& a : m_sommets )
+	{
+	    if(a->getSelection()==1)
+            nb++;
+	}
+	if(nb!=m_sommets.size())
+        i++;
+	return i;
+}
+
 
 
 void graphe::ajouterSommet(Sommet* s)
@@ -211,7 +243,7 @@ std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
     return res;
 }
 
-/*std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
+std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
 {
 
     std::vector<graphe> pourpareto;
@@ -242,7 +274,30 @@ std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
 
     return pourpareto;
 
-}*/
+}
+
+ std::vector<graphe> graphe::trierpourpareto(std::vector<graphe> grapheN)
+{
+     std::vector<graphe> pareto;
+    int nb_composantes_connexes;
+    int i=0;
+    for (auto a:grapheN)
+    {
+
+
+        nb_composantes_connexes=a.rechercher_afficherToutesCC();
+        if(nb_composantes_connexes==1)
+        {
+          pareto.push_back(a);
+        }
+        i++;
+    }
+    return pareto;
+
+
+
+
+}
 
 
 

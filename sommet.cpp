@@ -25,10 +25,32 @@ void Sommet::afficherVoisins() const
     }
 }
 
-
-void Sommet::selectionner()
+std::unordered_set<int> Sommet::rechercherCC ( ) const
 {
-    m_selectionner=1;
+	std::unordered_set<int> cc;
+	std::stack<const Sommet*> stack;
+	stack.push ( this );
+	cc.insert ( m_id );
+	while ( !stack.empty ( ) )
+	{
+		const Sommet* courant = stack.top ( );
+		stack.pop ( );
+		for ( const auto& a : courant->m_voisins )
+		{
+			if ( cc.find ( a->m_id ) == cc.end ( ) )
+			{
+				cc.insert ( a->m_id );
+				stack.push ( a );
+			}
+		}
+	}
+	return cc;
+}
+
+
+void Sommet::selectionner(bool a)
+{
+    m_selectionner=a;
 }
 
 bool Sommet::getSelection()
