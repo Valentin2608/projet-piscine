@@ -287,34 +287,28 @@ graphe graphe::prim(int num)
               return s1->getCout2() < s2->getCout2();});
                 }
 
-       /*  for(auto tri : aretes)
-        {
-             std::cout <<std::endl << " couut " ;
-        //  tri->AfficherArete();
-          std::cout << " couut " <<std::endl;
-        }*/
         k=0,i=0;
+        std::cout << "DEBUT"<< std::endl;
         for(auto tri : aretes)
         {
-
+            tri->AfficherArete();
+        }
+        std::cout << "FIN" << std::endl;
+        for(auto tri : aretes)
+        {
 
             if(tri->getSelection()!=1)
             {
                 if(num==1)
                 {
                     c=tri->getCout1();
-                    c2=aretes[i]->getCout1();
+                    c2=aretes[0]->getCout1();
                 }
                 if(num==2)
                 {
                     c=tri->getCout2();
-                    c2=aretes[i]->getCout2();
+                    c2=aretes[0]->getCout2();
                 }
-                //if((cou[i])==c)
-               // std::cout << "numero cout" << i << std::endl;
-                //tri->AfficherArete();
-                //aretes[i]->AfficherArete();
-               // std::cout << std::endl;
                 if(c==c2)
                 {
 
@@ -325,27 +319,34 @@ graphe graphe::prim(int num)
                     {
                         if(idd == (verif->getId()))
                             {
+                                std::cout << "ici1" << idd;
                                 idd = tri->getId_sommet2();
                                 for(auto veri : sommets_decouverts)
                                 {
                                     if(idd == (veri->getId())&&(i==0))
                                     {
                                         i++;
+
+                                        std::cout<< " ici " << idd;
+
+                                        aretes.erase(aretes.begin()+k);
                                     }
 
                                 }
                             }
                     }
-
-                        so=m_sommets[idd];
+                so=m_sommets[idd];
                        // so->afficherData();
+                       if((so->getSelection()==1) && (i==1))
+                        i++;
+
                         if(so->getSelection() != 1)
                         {
                             //cou.clear();
                             if(k==0)
                             {
-                               // std::cout << "ici";
-                                aretes.erase(aretes.begin()+i);
+
+                                aretes.erase(aretes.begin());
                                 id=idd;
                                 G.ajouterArete(tri);
                                 tri->selectionner(); ///  Bool 0 -> 1
@@ -354,6 +355,7 @@ graphe graphe::prim(int num)
 
                                 m_sommets[idd]->selectionner(); ///  Bool 0 -> 1
                                 sommets_decouverts=G.getSommets();
+
                             }
 
 
@@ -367,7 +369,6 @@ graphe graphe::prim(int num)
 
                 }
         }
-
     }
     while(m_sommets.size()!=(G.getSommets()).size());
 
