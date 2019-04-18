@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include "graphe.h"
-
+#include <allegro.h>
 /// SAUVEGARDE EXTRAITE DU CODE DU TP2
 graphe::graphe()
 {
@@ -48,6 +48,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
     ifs >> ordre;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture ordre du graphe");
+    nb_sommets=ordre;
     int id;
     double x,y;
     //lecture des sommets
@@ -68,6 +69,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2)
     ifs >> taille;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture taille du graphe");
+    nb_aretes=taille;
     int id2,id_s1,id_s2;
     //lecture des aretes
     for (int i=0; i<taille; ++i)
@@ -111,85 +113,7 @@ void graphe::afficher() const
 }
 
 
-/// A enlever si on a plus besoin à la fin
-/*void graphe::parcoursBFS(std::string id) const
-{
-    Sommet* s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    l_pred=s0->parcoursBFS();
-}
-void graphe::afficherBFS(std::string id) const
-{
-    Sommet* s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    std::cout<<"parcoursBFS a partir de "<<id<<" :"<<std::endl;
-    l_pred=s0->parcoursBFS();
-    for(auto s:l_pred)
-    {
-        std::cout<<s.first<<" <--- ";
-        std::pair<std::string,std::string> pred=s;
-        while(pred.second!=id)
-        {
-            pred=*l_pred.find(pred.second);
-            std::cout<<pred.first<<" <--- ";
-        }
-        std::cout<<id<<std::endl;
-    }
-}
-void graphe::parcoursDFS(std::string id) const
-{
-    Sommet*s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    l_pred=s0->parcoursDFS();
-}
-void graphe::afficherDFS(std::string id) const
-{
-    Sommet*s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    std::cout<<"parcoursDFS a partir de "<<id<<" :"<<std::endl;
-    l_pred=s0->parcoursDFS();
-    for(auto s:l_pred)
-    {
-        std::cout<<s.first<<" <--- ";
-        std::pair<std::string,std::string> pred=s;
-        while(pred.second!=id)
-        {
-            pred=*l_pred.find(pred.second);
-            std::cout<<pred.first<<" <--- ";
-        }
-        std::cout<<id<<std::endl;
-    }
-}
-int graphe::rechercher_afficherToutesCC() const
-{
-    int i=0;
-    std::cout<<"composantes connexes :"<<std::endl;
-    std::unordered_set<std::string> pred,cc;
 
-    for(auto a:m_sommets)
-    {
-        if(i<3)
-        {
-            Sommet* s0=a.second;
-            cc=s0->rechercherCC();
-            if((cc!=pred))
-            {
-                i++;
-                std::cout<< "   cc" << i << std::endl;
-                for(auto s:cc)
-                {
-                    std::cout<< "     " << s;
-                }
-                std::cout<< std::endl;
-            }
-            pred=cc;
-            cc.clear();
-        }
-    }
-
-    return i;
-}
-*/
 void graphe::ajouterSommet(Sommet* s)
 {
     m_sommets.push_back(s);
@@ -204,111 +128,125 @@ std::vector<Sommet*> graphe::getSommets()
 {
     return m_sommets;
 }
-/*
-
-
-graphe graphe::prim()
+/*void graphe::dessinerGraphe()
 {
-    int i=0;
-    ///  Crée un graphe vide
-
-    graphe G;
-
-    std::string id="0",id_voisin;
-    std::vector<Arete*> aretes;
-    std::vector<float> cou;
-    std::string idd;
-    std::vector<Sommet*> sommets_decouverts;
-    Sommet* so;
-    (m_sommets.find(id))->second->selectionner();
-    /// Selectionne un sommet et l'ajoute au graphe vide
-    Sommet* s=(m_sommets.find(id))->second;
-    G.ajouterSommet(s);
-    /// Parcourir tous les sommets du graphes de bases
-    do
+    //initialisation allegro
+    allegro_init();
+    install_keyboard();
+    set_color_depth(desktop_color_depth());
+    set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0);
+    BITMAP*buffer;
+    BITMAP*fond;
+    buffer=create_bitmap(1200,800);
+    fond=load_bitmap("fond.bmp",NULL);
+     if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,1200,800,0,0)!=0)
+    {
+        allegro_message("probleme mode graphique");
+        allegro_exit();
+        exit(EXIT_FAILURE);
+    }
+     while (!key[KEY_ESC])//ne pas sortir de la boucle
     {
 
-        std::vector<const Sommet*> voisins=(m_sommets.find(id))->second->getVoisins();
-        /// Parmis les voisins du sommets choisi, trouver les aretes correspondantes
-        for(auto y : voisins)
-        {
-            id_voisin = y->getId(); /// prendre ID du voisin
-            /// regarder parmis toutes les aretes du graphe laquelle relis les deux sommets avec leur ID
-            for(auto a : m_aretes)
-            {
-                if(a.second->getBool() != 1)
-                {
-
-                    std::vector<std::string> sommets = a.second->getSommets();
-                    std::string num = (m_sommets.find(id))->second->getId(); /// Recuperer ID du sommet initiale
-
-                    if(( num == sommets[0])||(num == sommets[1]))  /// Si l'id du sommet initial correspond a une arrete
-                        if((id_voisin==sommets[0])||(id_voisin==sommets[1])) /// Si l'id du sommet voisin correspond a la meme arrete
-                        {
-                            aretes.push_back(a.second);
-                            a.second->utiliser(); /// "marquer" l'arete utilisée pour pas qu'on la reprenne
-                        }
-                }
-            }
-
-        }
-
-        /// A REVOIR
-        /// Une fois que les arrêtes relies au sommet initiale sont trouvées
-        for(auto tri : aretes)
-        {
-            if(tri->getSelection()!=1)
-            {
-                cou.push_back(tri->getCout1());
-            }
-        }
-        std::sort(cou.begin(), cou.end()); /// on range tous les coût par ordre croissant
-
-        for(auto tri : aretes)
-        {
-
-
-            if(tri->getSelection()!=1)
-            {
-
-                    if((cou[0])==(tri->getCout1())) ///  REGLER LE PB EN CAS D'EGALITE CHOISIR 1 ARRETE PAS LES DEUX
-                    {
-
-
-
-                        cou.clear();
-                        G.ajouterArete(tri);
-                        tri->selectionner(); ///  Bool 0 -> 1
-
-                        idd = tri->getId_sommet1();
-                        if(idd==id)
-                            idd = tri->getId_sommet2();
-
-
-                        so=(m_sommets.find(idd))->second;
-                        if(so->getSelection()!=1)
-                        {
-                            G.ajouterSommet(so);
-                            id=idd;
-                            (m_sommets.find(idd))->second->selectionner();
-                            so->afficherData();
-                        }
-
-                    }
-
-
-            }
-        }
-
+    draw_sprite(buffer,fond,0,0);
+    // dessin arêtes
+     for (auto a:m_aretes)
+     {
+         std::string idd1=a.second->getId_sommet1();// on prend le numero des sommets de l'arête
+         std::string idd2=a.second->getId_sommet2();
+         Sommet*s=(m_sommets.find(idd1))->second;
+         Sommet*p= (m_sommets.find(idd2))->second;
+         line(buffer,s->getX()*1.5,s->getY()*1.5,p->getX()*1.5,p->getY()*1.5,makecol(0,0,255));//affichage arête
+       //  textprintf_ex(screen,font,((s->getX()+p->getX)/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC1().c_str());//affichage numéro arête
+        //textprintf_ex(screen,font,((s->getX()+p->getX)/2)-10,((s->getY()+p->getY())/2)-5,makecol(255,255,255),-1,a.second->getC2().c_str());//affichage numéro arête
+     }
+     //dessin des sommets
+    for(auto a:m_sommets)
+    {
+        circlefill(buffer,(a.second->getX())*1.5,(a.second->getY())*1.5,15,makecol(0,0,255));//affichage sommet
+        textprintf_ex(buffer,font,(a.second->getX()-2)*1.5,(a.second->getY()-2)*1.5,makecol(255,255,255),-1,a.second->getId().c_str());//affichage numero du sommet
     }
-    while(m_sommets.size()!=(G.getSommets()).size());
-    G.afficher();
+    draw_sprite(screen,buffer,0,0);
+    }
+}*/
+std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
+{
+    std::vector<std::vector<int>> res;
 
+    std::vector<int> tmp(a);
 
-    return G;
+    for (int i = 0; i < b; i++)
+        tmp[i] = i;
+
+    while (tmp[0] < b-a+1)
+    {
+        int j = a - 1;
+
+        res.push_back(tmp);
+
+        tmp[j] += 1;
+
+        int lim = b;
+
+        int cpt = 0;
+
+        while(j > 0)
+        {
+            if (tmp[j] >= lim)
+            {
+                j -= 1;
+                lim -= 1;
+                tmp[j] += 1;
+                cpt++;
+            }
+
+            else
+                j = -1;
+        }
+
+        for (int i = a - cpt; i < a; i ++)
+            tmp[i] = tmp[i - 1] + 1;
+    }
+
+    return res;
 }
 
-*/
+/*std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
+{
+
+    std::vector<graphe> pourpareto;
+
+    int recupIDA;
+
+
+    for (auto a:tab)
+    {
+
+      graphe g;
+        for(auto b :m_sommets)
+        {
+            g.ajouterSommet(b);
+        }
+
+    for (auto i=0;i<nb_sommets-1;i++)
+    {
+
+        recupIDA=a[i];
+        g.ajouterArete(m_aretes[recupIDA]);
+
+    }
+
+     pourpareto.push_back(g);
+
+    }
+
+    return pourpareto;
+
+}*/
+
+
+
+
 graphe::~graphe()
 {
     //dtor

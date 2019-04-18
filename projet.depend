@@ -150,3 +150,43 @@
 	<unordered_set>
 	"sommet.h"
 
+1555498142 source:c:\users\guisn\projet-piscine\arete.cpp
+	"arete.h"
+
+1555498142 c:\users\guisn\projet-piscine\arete.h
+	<iostream>
+	<string>
+	<vector>
+
+1555498142 source:c:\users\guisn\projet-piscine\sommet.cpp
+	<iostream>
+	<queue>
+	<stack>
+	<unordered_map>
+	<unordered_set>
+	"sommet.h"
+
+1555498142 c:\users\guisn\projet-piscine\sommet.h
+	<string>
+	<vector>
+	<queue>
+	<unordered_map>
+	<unordered_set>
+
+1555515584 source:c:\users\guisn\projet-piscine\main.cpp
+	<iostream>
+	"graphe.h"
+
+1555515002 c:\users\guisn\projet-piscine\graphe.h
+	<string>
+	<unordered_map>
+	<algorithm>
+	"sommet.h"
+	"arete.h"
+
+1555515002 source:c:\users\guisn\projet-piscine\graphe.cpp
+	<fstream>
+	<iostream>
+	"graphe.h"
+	<allegro.h>
+
