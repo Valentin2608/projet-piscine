@@ -201,11 +201,14 @@ std::vector<Sommet*> graphe::getSommets()
     draw_sprite(screen,buffer,0,0);
     }
 }*/
-std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
+std::vector<graphe> graphe::bruteForce(int a,int b)
 {
-    std::vector<std::vector<int>> res;
 
-    std::vector<int> tmp(a);
+    std::vector<graphe> pourpareto;
+
+    std::vector<int> *tmp(a);
+    int recupIDA;
+    int nb_composantes_connexes;
 
     for (int i = 0; i < b; i++)
         tmp[i] = i;
@@ -213,8 +216,26 @@ std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
     while (tmp[0] < b-a+1)
     {
         int j = a - 1;
+        graphe g;
+        for(auto b :m_sommets)
+        {
+            g.ajouterSommet(b);
+        }
 
-        res.push_back(tmp);
+        for (auto i=0;i<a;i++)
+        {
+
+            recupIDA=tmp[i];
+            g.ajouterArete(m_aretes[recupIDA]);
+
+        }
+        nb_composantes_connexes=g.rechercher_afficherToutesCC();
+        if(nb_composantes_connexes==1)
+        {
+          pourpareto.push_back(g);
+        }
+
+
 
         tmp[j] += 1;
 
@@ -240,10 +261,10 @@ std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
             tmp[i] = tmp[i - 1] + 1;
     }
 
-    return res;
+    return pourpareto;
 }
 
-std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
+/*std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
 {
 
     std::vector<graphe> pourpareto;
@@ -254,7 +275,7 @@ std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
     for (auto a:tab)
     {
 
-      graphe g;
+        graphe g;
         for(auto b :m_sommets)
         {
             g.ajouterSommet(b);
@@ -278,7 +299,7 @@ std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
 
  std::vector<graphe> graphe::trierpourpareto(std::vector<graphe> grapheN)
 {
-     std::vector<graphe> pareto;
+    std::vector<graphe> pareto;
     int nb_composantes_connexes;
     int i=0;
     for (auto a:grapheN)
@@ -297,7 +318,7 @@ std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
 
 
 
-}
+}*/
 
 
 

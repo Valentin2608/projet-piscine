@@ -4,18 +4,11 @@
 int main()
 {
     std::string id;
-    graphe g{"files/broadway.txt", "files/broadway_weights_0.txt"};
+    graphe g{"files/triville.txt", "files/triville_weights_0.txt"};
     //g.prim();
 
-    auto tab=g.bruteForce(3,5);
+    auto tab=g.bruteForce(9,18);
     std::cout<<tab.size()<<std::endl;
-
-    auto tab2=g.creerGraphes(tab);
-
-
-    auto tab3=g.trierpourpareto(tab2);
-
-    std::cout<<tab3.size()<<std::endl;
 
 
 

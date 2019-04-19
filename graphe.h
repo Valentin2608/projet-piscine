@@ -16,13 +16,13 @@ class graphe
         ~graphe();
         void afficher() const;
        // void dessinerGraphe();
-        std::vector<std::vector<int>>bruteForce(int a,int b);
-        std::vector<graphe>creerGraphes(std::vector<std::vector<int>>tab);
+        std::vector<graphe>bruteForce(int a,int b);
+        //std::vector<graphe>creerGraphes(std::vector<std::vector<int>>tab);
         void ajouterSommet(Sommet *s);
         void ajouterArete(Arete *s);
         std::vector<Sommet*> getSommets();
         int rechercher_afficherToutesCC() const;
-        std::vector<graphe>trierpourpareto(std::vector<graphe> grapheN);
+        //std::vector<graphe>trierpourpareto(std::vector<graphe> grapheN);
 
     protected:
 
