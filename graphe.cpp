@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include "graphe.h"
-
+#include <allegro.h>
 /// SAUVEGARDE EXTRAITE DU CODE DU TP2
 graphe::graphe()
 {
@@ -191,22 +191,50 @@ int graphe::rechercher_afficherToutesCC ( ) const
 
 
 
-std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
+std::vector<graphe> graphe::bruteForce()
 {
-    std::vector<std::vector<int>> res;
 
+    std::vector<graphe> pourpareto;
+    int a;
+    int b;
+    a=m_sommets.size()-1;
+    b=m_aretes.size();
+    std::cout<<a<<"  "<<b<<std::endl;
     std::vector<int> tmp(a);
+    int recupIDA;
+    int nb_composantes_connexes;
 
-    for (int i = 0; i < b; i++)
+    for (int i = 0; i < a; i++)
         tmp[i] = i;
 
     while (tmp[0] < b-a+1)
     {
+
         int j = a - 1;
 
-        res.push_back(tmp);
+        graphe *f=new graphe;
+
+        for(auto cq :m_sommets)
+        {
+            f->ajouterSommet(cq);
+        }
+
+
+        for (auto i=0;i<a;i++)
+        {
+
+            recupIDA=tmp[i];
+            f->ajouterArete(m_aretes[recupIDA]);
+
+        }
+        nb_composantes_connexes=f->rechercher_afficherToutesCC();
+        if(nb_composantes_connexes==1)
+        {
+          pourpareto.push_back(*f);
+        }
 
         tmp[j] += 1;
+
 
         int lim = b;
 
@@ -230,65 +258,8 @@ std::vector<std::vector<int>> graphe::bruteForce(int a,int b)
             tmp[i] = tmp[i - 1] + 1;
     }
 
-    return res;
-}
-
-std::vector<graphe> graphe::creerGraphes(std::vector<std::vector<int>> tab)
-{
-
-    std::vector<graphe> pourpareto;
-
-    int recupIDA;
-
-
-    for (auto a:tab)
-    {
-
-      graphe g;
-        for(auto b :m_sommets)
-        {
-            g.ajouterSommet(b);
-        }
-
-    for (auto i=0;i<nb_sommets-1;i++)
-    {
-
-        recupIDA=a[i];
-        g.ajouterArete(m_aretes[recupIDA]);
-
-    }
-
-     pourpareto.push_back(g);
-
-    }
-
     return pourpareto;
-
 }
-
- std::vector<graphe> graphe::trierpourpareto(std::vector<graphe> grapheN)
-{
-     std::vector<graphe> pareto;
-    int nb_composantes_connexes;
-    int i=0;
-    for (auto a:grapheN)
-    {
-
-
-        nb_composantes_connexes=a.rechercher_afficherToutesCC();
-        if(nb_composantes_connexes==1)
-        {
-          pareto.push_back(a);
-        }
-        i++;
-    }
-    return pareto;
-
-
-
-
-}
-
 graphe graphe::prim(int num)
 {
     int i=0,k,u=0;

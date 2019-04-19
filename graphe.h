@@ -29,10 +29,10 @@ class graphe
         float getPoidsTotal1();
         float getPoidsTotal2();
 
-        std::vector<graphe> creerGraphes(std::vector<std::vector<int>> tab);
-        std::vector<std::vector<int>> bruteForce(int a,int b);
+        //std::vector<graphe> creerGraphes(std::vector<std::vector<int>> tab);
+        std::vector<graphe>bruteForce();
         int rechercher_afficherToutesCC ( ) const;
-         std::vector<graphe> trierpourpareto(std::vector<graphe> grapheN);
+        // std::vector<graphe> trierpourpareto(std::vector<graphe> grapheN);
 
     protected:
 
