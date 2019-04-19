@@ -188,6 +188,63 @@ int graphe::rechercher_afficherToutesCC ( ) const
         i++;
 	return i;
 }
+int graphe::tableau_connexite( )
+
+{
+    int cpt=0;
+    int i;
+    int val=0;
+    int somme_connexite=0;
+    std::vector<int>connexite;
+
+    for(int i=0; i<m_sommets.size(); i++)
+
+    {
+
+        connexite.push_back(i+1);
+
+    }
+
+///dans le if(vecA[i]->GetEtat()==1) à la fin
+
+    for (auto j: m_aretes)
+    {
+            val= connexite[j->getId_sommet1()];
+            connexite[j->getId_sommet1()]=connexite[j->getId_sommet2()];
+            for(int k=0; k<connexite.size(); k++)
+            {
+
+                if(connexite[k]==val)
+
+                {
+                    connexite[k]=connexite[j->getId_sommet2()];
+
+                }
+            }
+
+
+    }
+
+
+for(auto l:connexite)
+{
+    if(connexite[0]==l)
+        cpt++;
+
+}
+//std::cout << "cpt :" << cpt << "sommet:" << m_sommets.size();
+if(cpt==m_sommets.size())
+   {
+      i=1;
+    return i;
+   }
+   else
+    return i=0;
+
+
+
+
+}
 
 
 
@@ -199,10 +256,10 @@ std::vector<graphe> graphe::bruteForce()
     int b;
     a=m_sommets.size()-1;
     b=m_aretes.size();
-    std::cout<<a<<"  "<<b<<std::endl;
     std::vector<int> tmp(a);
     int recupIDA;
     int nb_composantes_connexes;
+    int nb_connexite;
 
     for (int i = 0; i < a; i++)
         tmp[i] = i;
@@ -228,7 +285,8 @@ std::vector<graphe> graphe::bruteForce()
 
         }
         nb_composantes_connexes=f->rechercher_afficherToutesCC();
-        if(nb_composantes_connexes==1)
+        nb_connexite=f->tableau_connexite();
+        if((nb_composantes_connexes==1)&& (nb_connexite==1))
         {
           pourpareto.push_back(*f);
         }
@@ -403,7 +461,7 @@ graphe graphe::prim(int num)
                                 aretes.erase(aretes.begin());
                                 id=idd;
                                 G.ajouterArete(tri);
-                                tri->selectionner(); ///  Bool 0 -> 1
+                                tri->selectionner(1); ///  Bool 0 -> 1
                                 G.ajouterSommet(so);
                                 tri->AfficherArete();
 
@@ -502,7 +560,41 @@ void graphe::dessinerGraphe()
     draw_sprite(screen,buffer,0,0);
     }
 }
+/*///je possède le vector GraphesN;
+std::vector<graphe>GraphesN;
+///je calcule les poids totaux de chacun de mes graphes.
+for (auto a:GraphesN)
+    a->CalculPoidsTot;
 
+///Je sort GraphesN par rapport au poids 1.
+bool fonction(graphe g, graphe gbis)
+{
+    return g.getPoidsTot1<gbis.getPoidsTot2
+}
+std::sort(GraphesN.begin(),GraphesN.end(),fonction)
+///Le graphe GraphesN est sort en valeur croissante de cout 1 (normalement)
+
+std::vector<graphe> ParetoND;///Vecteur des paretos non dominés
+std::vector<graphe> ParetoD;
+pareto.pushback(GraphesN[0]);
+float a=GraphesN[0]->getPoidsTot2;///fleche ou point ?
+for(i=1;i<GraphesN;++i)
+{
+    float b=GraphesN[i]->getPoidsTot1;
+    if (a<b)
+    {
+    ParetoD.push_back(GraphesN[i]);
+        i++;
+    }
+    else
+        ParetoND.push_back(GraphesN[i]);
+        a=GraphesN[i]->getPoidsTot2;
+
+}
+///On a un tableau rempli avec les ParetosDominés ( a mettre en rouge avec allegro)
+/// et on a un tableau rempli avec les ParetosNonDominés(a mettre en vert avec allegro)
+///fonction de
+*/
 
 
 graphe::~graphe()

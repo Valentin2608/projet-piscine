@@ -32,6 +32,7 @@ class graphe
         //std::vector<graphe> creerGraphes(std::vector<std::vector<int>> tab);
         std::vector<graphe>bruteForce();
         int rechercher_afficherToutesCC ( ) const;
+        int tableau_connexite( ) ;
         // std::vector<graphe> trierpourpareto(std::vector<graphe> grapheN);
 
     protected:

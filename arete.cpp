@@ -40,9 +40,9 @@ int Arete::getId_sommet1()
     return m_id_sommet[0];
 }
 
-void Arete::selectionner()
+void Arete::selectionner(bool a)
 {
-    m_selectionner=1;
+    m_selectionner=a;
 }
 
 

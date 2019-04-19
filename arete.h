@@ -20,7 +20,7 @@ class Arete
         bool getBool();
         bool getSelection();
         void utiliser();
-        void selectionner();
+        void selectionner(bool a);
        int  getId() const;
        int getId_sommet2();
        int  getId_sommet1();
