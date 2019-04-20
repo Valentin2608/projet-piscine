@@ -5,21 +5,29 @@ int main()
 {
 
     std::string id;
-    graphe g{"files/cubetown.txt", "files/cubetown_weights_0.txt"};
-    //graphe g_min;
-    //g_min=g.prim(1); ///  cubetown 1
-    //g_min.dessinerGraphe();
+    graphe g{"files/broadway.txt", "files/broadway_weights_0.txt"};
+
+    /// PARTIE 1
+    graphe g_min1,g_min2;
+    g_min1=g.prim(1);
+    g_min2=g.prim(2);
 
 
-    //g.prim();
+    /// PARTIE 2
+    auto tab1=g.bruteForce();
+    appliquerPareto(tab1,1);
 
-   // auto tab=g.bruteForce();
-    //appliquerPareto(tab);
 
-    g.dijkstra(0);
-    g.dessinerGraphe();
+    /// PARTIE 3
+    auto tab=g.multipleBruteForce();
+    for(auto& t : tab)
+    {
+        t.appliquerDijkstra();
+    }
+    appliquerPareto(tab,0);
 
 
 
     return 0;
+
 }END_OF_MAIN();

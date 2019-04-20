@@ -19,7 +19,7 @@ class Arete
         float getCout2();
         bool getBool();
         bool getSelection();
-        void utiliser();
+        void utiliser(bool a);
         void selectionner(bool a);
        int  getId() const;
        int getId_sommet2();

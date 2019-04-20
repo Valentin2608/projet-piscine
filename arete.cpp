@@ -25,9 +25,9 @@ bool Arete::getSelection()
     return m_selectionner;
 }
 
-void Arete::utiliser()
+void Arete::utiliser(bool a)
 {
-    m_utiliser=1;
+    m_utiliser=a;
 }
 
 int  Arete::getId_sommet2()
