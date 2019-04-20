@@ -69,8 +69,9 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2) : m_coutTot2{0.0
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture taille du graphe");
     nb_aretes=taille;
-    int id2,id_s1,id_s2;
+    int id2,id_s1,id_s2,a=0;
     //lecture des aretes
+    adj = new std::vector<std::pair<int,int>> [m_sommets.size()];
     for (int i=0; i<taille; ++i)
     {
         ///lecture des ids des deux extrémités
@@ -89,9 +90,17 @@ graphe::graphe(std::string nomFichier, std::string nomFichier2) : m_coutTot2{0.0
         m_aretes[id2]->AjouterSommets(id_s1,id_s2);
         m_sommets[id_s1]->ajouterVoisin(m_sommets[id_s2]);
         m_sommets[id_s2]->ajouterVoisin(m_sommets[id_s1]);
+        float w=m_aretes[a]->getCout1();
+        adj[id_s1].push_back(std::make_pair(id_s2, w));
+        adj[id_s2].push_back(std::make_pair(id_s1, w));
+        if(a!=taille2)
+            a++;
     }
 
 }
+
+
+
 void graphe::afficher() const
 {
     std::cout<<"graphe : "<<std::endl;
@@ -561,41 +570,7 @@ void graphe::dessinerGraphe()
     draw_sprite(screen,buffer,0,0);
     }
 }
-/*///je possède le vector GraphesN;
-std::vector<graphe>GraphesN;
-///je calcule les poids totaux de chacun de mes graphes.
-for (auto a:GraphesN)
-    a->CalculPoidsTot;
 
-///Je sort GraphesN par rapport au poids 1.
-bool fonction(graphe g, graphe gbis)
-{
-    return g.getPoidsTot1<gbis.getPoidsTot2
-}
-std::sort(GraphesN.begin(),GraphesN.end(),fonction)
-///Le graphe GraphesN est sort en valeur croissante de cout 1 (normalement)
-
-std::vector<graphe> ParetoND;///Vecteur des paretos non dominés
-std::vector<graphe> ParetoD;
-pareto.pushback(GraphesN[0]);
-float a=GraphesN[0]->getPoidsTot2;///fleche ou point ?
-for(i=1;i<GraphesN;++i)
-{
-    float b=GraphesN[i]->getPoidsTot1;
-    if (a<b)
-    {
-    ParetoD.push_back(GraphesN[i]);
-        i++;
-    }
-    else
-        ParetoND.push_back(GraphesN[i]);
-        a=GraphesN[i]->getPoidsTot2;
-
-}
-///On a un tableau rempli avec les ParetosDominés ( a mettre en rouge avec allegro)
-/// et on a un tableau rempli avec les ParetosNonDominés(a mettre en vert avec allegro)
-///fonction de
-*/
 
 bool fonction(graphe g, graphe gbis)
 {
@@ -638,15 +613,7 @@ void appliquerPareto(std::vector<graphe> &G)
 
      }
     }
-   /* for (auto& a: ParetoD)
-    {
-        std::cout  << " ROUGE | COUT TOT 1 " << a.getPoidsTotal1() << "COUT TOT 2 " << a.getPoidsTotal2() << std::endl;
-    }*/
 
-     for (auto& a: ParetoND)
-    {
-        std::cout  << " VERT | COUT TOT 1 " << a.getPoidsTotal1() << "COUT TOT 2 " << a.getPoidsTotal2() << std::endl;
-    }
   //  dessinerpoint(ParetoD,ParetoND);
 }
 
@@ -691,6 +658,42 @@ void appliquerPareto(std::vector<graphe> &G)
     }
 }
 
+
+/// inspiré du code sur le site https://ideone.com/qkmt31
+
+void graphe::dijkstra(int source) //Algorithm for SSSP
+{
+
+    int A=m_sommets.size();
+
+    bool vis[A]={0};
+    int dis[A];
+    std::cout << "ici";
+    for(int i=0;i<A;i++) //Set initial distances to Infinity
+        {
+            dis[i]=INT_MAX;
+        }
+
+    class prioritize{public: bool operator ()(std::pair<int, float>&p1 ,std::pair<int, float>&p2){return p1.second>p2.second;}};
+    std::priority_queue<std::pair<int,float> ,std::vector<std::pair<int,float>>, prioritize> pq; //Priority queue to store vertex,weight pairs
+    pq.push(std::make_pair(source,dis[source]=0)); //Pushing the source with distance from itself as 0
+
+    while(!pq.empty())
+    {
+        std::pair<int, float> curr=pq.top(); //Current vertex. The shortest distance for this has been found
+        pq.pop();
+        int cv=curr.first,cw=curr.second; //'cw' the final shortest distance for this vertex
+        if(vis[cv]) //If the vertex is already visited, no point in exploring adjacent vertices
+            continue;
+        vis[cv]=true;
+        for(int i=0;i<adj[cv].size();i++) //Iterating through all adjacent vertices
+            if(!vis[adj[cv][i].first] && adj[cv][i].second+cw<dis[adj[cv][i].first]) //If this node is not visited and the current parent node distance+distance from there to this node is shorted than the initial distace set to this node, update it
+                pq.push(std::make_pair(adj[cv][i].first,(dis[adj[cv][i].first]=adj[cv][i].second+cw))); //Set the new distance and add to priority queue
+    }
+    printf("Vertex   Distance from Source\n");
+    for (int i = 0; i < A; ++i)
+        printf("%d \t\t %d\n", i, dis[i]);
+}
 
 graphe::~graphe()
 {

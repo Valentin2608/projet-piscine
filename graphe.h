@@ -6,6 +6,10 @@
 #include "sommet.h"
 #include "arete.h"
 #include <allegro.h>
+#include <queue>
+#include <climits>
+#include <iostream>
+#include  <float.h>
 
 
 class graphe
@@ -30,11 +34,13 @@ class graphe
         float getPoidsTotal2() const;
         void dessinerpoint(std::string c);
 
-        //std::vector<graphe> creerGraphes(std::vector<std::vector<int>> tab);
+
         std::vector<graphe>bruteForce();
         int rechercher_afficherToutesCC ( ) const;
         int tableau_connexite( ) ;
-        // std::vector<graphe> trierpourpareto(std::vector<graphe> grapheN);
+
+        void addEdge(int u, int v, int w);
+        void dijkstra(int source);
 
     protected:
 
@@ -45,6 +51,7 @@ class graphe
         float m_coutTot1=0;
         float m_coutTot2=0;
         int nb_sommets,nb_aretes;
+        std::vector<std::pair<int, int>> *adj;
 };
 
 void appliquerPareto(std::vector<graphe> &G);
