@@ -26,8 +26,9 @@ class graphe
         void ajouterAretes(std::vector<Arete*> som);
         void dessinerGraphe();
         void CalculPoidsTotaux();
-        float getPoidsTotal1();
-        float getPoidsTotal2();
+        float getPoidsTotal1() const;
+        float getPoidsTotal2() const;
+        void dessinerpoint(std::string c);
 
         //std::vector<graphe> creerGraphes(std::vector<std::vector<int>> tab);
         std::vector<graphe>bruteForce();
@@ -45,5 +46,8 @@ class graphe
         float m_coutTot2=0;
         int nb_sommets,nb_aretes;
 };
+
+void appliquerPareto(std::vector<graphe> &G);
+void dessinerpoint(std::vector<graphe> n1,std::vector<graphe> n2);
 
 #endif // GRAPHE_H

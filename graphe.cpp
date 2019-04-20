@@ -8,7 +8,7 @@ graphe::graphe()
 
 }
 
-graphe::graphe(std::string nomFichier, std::string nomFichier2)
+graphe::graphe(std::string nomFichier, std::string nomFichier2) : m_coutTot2{0.0} , m_coutTot1{0.0}
 {
     /// OUVERTURE DU FICHIER PONDERATION
     std::ifstream pfs{nomFichier2};
@@ -144,14 +144,15 @@ void graphe::CalculPoidsTotaux()
         coutTot2=coutTot2+a->getCout2();
 
     }
-   m_coutTot2=coutTot2;
+    m_coutTot2=coutTot2;
+
 }
 
-float graphe:: getPoidsTotal2()
+float graphe:: getPoidsTotal2() const
 {
     return m_coutTot2;
 }
-float graphe::getPoidsTotal1()
+float graphe::getPoidsTotal1() const
 {
     return m_coutTot1;
 
@@ -595,6 +596,100 @@ for(i=1;i<GraphesN;++i)
 /// et on a un tableau rempli avec les ParetosNonDominés(a mettre en vert avec allegro)
 ///fonction de
 */
+
+bool fonction(graphe g, graphe gbis)
+{
+    return g.getPoidsTotal1()<gbis.getPoidsTotal1();
+}
+void appliquerPareto(std::vector<graphe> &G)
+{
+    std::vector<graphe>ParetoD;///graphe pareto dominés
+    std::vector<graphe>ParetoND;///graphe pareto non dominés
+
+    for (auto& a: G)
+    {
+        a.CalculPoidsTotaux();
+    }
+    std::sort(G.begin(),G.end(),fonction);
+
+    ParetoND.push_back(G[0]);
+    float a=G[0].getPoidsTotal2();
+    float pred=G[0].getPoidsTotal1();
+    graphe predd=G[0];
+
+    for(size_t i=1;i<G.size();++i)
+    {
+    float b=G[i].getPoidsTotal2();
+    if(a<=b)
+     {
+         ParetoD.push_back(G[i]);
+     }
+     else
+     {
+         if( pred == G[i].getPoidsTotal1())
+         {
+             ParetoND.erase(ParetoND.end());
+             ParetoD.push_back(predd);
+         }
+         ParetoND.push_back(G[i]);
+         a=G[i].getPoidsTotal2();
+         pred=G[i].getPoidsTotal1();
+         predd=G[i];
+
+     }
+    }
+   /* for (auto& a: ParetoD)
+    {
+        std::cout  << " ROUGE | COUT TOT 1 " << a.getPoidsTotal1() << "COUT TOT 2 " << a.getPoidsTotal2() << std::endl;
+    }*/
+
+     for (auto& a: ParetoND)
+    {
+        std::cout  << " VERT | COUT TOT 1 " << a.getPoidsTotal1() << "COUT TOT 2 " << a.getPoidsTotal2() << std::endl;
+    }
+  //  dessinerpoint(ParetoD,ParetoND);
+}
+
+ void dessinerpoint(std::vector<graphe> n1,std::vector<graphe> n2)
+    {
+    allegro_init();
+    install_keyboard();
+    install_mouse();
+    set_color_depth(desktop_color_depth());
+    set_gfx_mode(GFX_AUTODETECT_WINDOWED,1200,800,0,0);
+
+    //initialisation allegro
+
+    BITMAP*buffer;
+    BITMAP*fond;
+    buffer=create_bitmap(1200,800);
+    fond=load_bitmap("fond.bmp",NULL);
+
+     if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,1200,800,0,0)!=0)
+    {
+        allegro_message("probleme mode graphique");
+        allegro_exit();
+        exit(EXIT_FAILURE);
+    }
+    show_mouse(screen);
+     while (!key[KEY_ESC])//ne pas sortir de la boucle
+    {
+        clear_to_color(buffer, makecol(255,255,255));
+        draw_sprite(buffer,fond,0,0);
+
+        for(auto a: n1)
+        {
+
+           circlefill(buffer,a.getPoidsTotal1(),a.getPoidsTotal2(),5,makecol(255,0,0));
+        }
+
+        for(auto a: n2)
+        {
+
+            circlefill(buffer,a.getPoidsTotal1(),a.getPoidsTotal2(),5,makecol(255,0,0));
+        }
+    }
+}
 
 
 graphe::~graphe()
